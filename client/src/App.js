@@ -1,19 +1,17 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState } from 'react'; // 1. Importa o useState
+import { useState } from 'react';
 
 // Importa nossos componentes
 import LoginPage from './components/LoginPage';
 import DashboardPage from './components/DashboardPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import Footer from './components/Footer';
 
 function App() {
-  // 2. Cria o nosso "estado" para lembrar se o usuário está logado. Começa como falso.
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // 3. Funções para simular o login e logout
   const handleLogin = () => {
-    // No futuro, esta função será chamada após a resposta bem-sucedida da API da Riot.
     setIsAuthenticated(true);
   };
 
@@ -44,6 +42,7 @@ function App() {
             } 
           />
         </Routes>
+        <Footer /> {}
       </div>
     </Router>
   );

@@ -1,22 +1,25 @@
 import React from 'react';
 import './LoginPage.css';
+// 1. Importa um ícone da biblioteca. "Ri" significa Remix Icon.
+import { RiSwordFill } from "react-icons/ri";
 
-// Recebe a função handleLogin como uma "prop"
 const LoginPage = ({ handleLogin }) => {
 
   const onLoginClick = () => {
-    // Por enquanto, apenas chamamos a função de simulação.
     window.location.href = 'https://valorant-7w4h.onrender.com/auth/riot';
-    handleLogin(); 
   };
 
   return (
     <div className="login-container">
-      <h2>Bem-vindo</h2>
-      <p>Faça o login com sua conta Riot Games para analisar suas estatísticas.</p>
-      <button className="login-button" onClick={onLoginClick}>
-        Entrar com a Riot Games
-      </button>
+      <div className="login-box"> {/* Adicionamos uma div para o painel */}
+        <h2>SEJA BEM-VINDO, AGENTE</h2>
+        <p>Conecte-se com sua conta Riot para acessar dados táticos de suas partidas.</p>
+        <button className="login-button" onClick={onLoginClick}>
+          {/* 2. Adiciona o ícone ao lado do texto */}
+          <RiSwordFill /> 
+          Entrar com a Riot Games
+        </button>
+      </div>
     </div>
   );
 };

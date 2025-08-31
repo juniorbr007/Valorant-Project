@@ -1,37 +1,62 @@
+/* client/src/components/LoginPage.css */
 .login-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh; /* Ocupa a altura inteira da tela */
+  height: 100vh;
   text-align: center;
-  background-color: #1a1a1a; /* Fundo escuro */
-  color: #fafafa; /* Texto claro */
+  color: #fafafa;
 }
 
-.login-container h2 {
-  font-size: 2.5rem;
+.login-box {
+  background-color: rgba(10, 10, 10, 0.7); /* Fundo semi-transparente */
+  padding: 40px 50px;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  backdrop-filter: blur(8px); /* O efeito de vidro fosco! */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-box h2 {
+  font-size: 3rem;
   margin-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
 }
 
-.login-container p {
-  font-size: 1.1rem;
+.login-box p {
+  font-size: 1.3rem;
   margin-bottom: 2rem;
   max-width: 400px;
+  font-weight: 400;
 }
 
 .login-button {
-  padding: 12px 24px;
-  font-size: 1rem;
-  font-weight: bold;
+  display: flex; /* Para alinhar o ícone e o texto */
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Espaço entre o ícone e o texto */
+
+  padding: 15px 30px;
+  font-family: 'Teko', sans-serif; /* Garante a fonte correta no botão */
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
   color: #fff;
-  background-color: #fd4556; /* Vermelho Valorant */
+  background-color: #fd4556;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .login-button:hover {
-  background-color: #b7323f; /* Vermelho um pouco mais escuro */
+  background-color: #fff;
+  color: #fd4556;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(253, 69, 86, 0.4);
 }

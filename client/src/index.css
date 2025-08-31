@@ -1,13 +1,15 @@
+/* client/src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;700&display=swap');
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Teko', sans-serif; /* Nossa nova fonte! */
+
+  /* Configuração do Background */
+  background-image: url('./assets/background.jpg'); /* Verifique se o caminho está certo! */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* Efeito parallax legal */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
 }
