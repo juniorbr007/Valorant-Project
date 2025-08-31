@@ -209,6 +209,36 @@ app.get('/api/matches', async (req, res) => {
   }
 });
 
+// Adicione esta rota ao seu server/index.js
+
+// NOVA ROTA PARA ACIONAR O MODELO DE CLASSIFICAÇÃO
+app.get('/api/run-classifier', (req, res) => {
+  console.log("-> Acionando o script de classificação em Python...");
+
+  const pythonProcess = spawn('python', ['classifier_model.py']);
+  
+  let resultData = '';
+  // O script Python vai retornar os resultados como uma única linha de JSON
+  pythonProcess.stdout.on('data', (data) => {
+    resultData += data.toString();
+  });
+
+  pythonProcess.stderr.on('data', (data) => {
+    console.error(`[Python Script ERROR]: ${data}`);
+  });
+
+  pythonProcess.on('close', (code) => {
+    if (code === 0) {
+      console.log("-> Script de classificação finalizado com sucesso.");
+      // Envia os resultados do modelo (em JSON) de volta para o frontend
+      res.status(200).json(JSON.parse(resultData));
+    } else {
+      console.log(`-> Script de classificação finalizado com erro, código: ${code}`);
+      res.status(500).send("Ocorreu um erro durante o processo de classificação.");
+    }
+  });
+});
+
 // --- INICIALIZAÇÃO DO SERVIDOR ---
 // Garante que o servidor só comece a escutar por requisições DEPOIS de conectar ao banco
 connectDB().then(() => {

@@ -8,6 +8,7 @@ const DashboardLayout = () => {
       <nav className="dashboard-nav">
         <NavLink to="/dashboard" end>Visão Geral</NavLink>
         <NavLink to="/dashboard/charts">Gráficos de Performance</NavLink>
+        <NavLink to="/dashboard/lab">Laboratório de Modelos</NavLink>
         {/* No futuro, podemos adicionar mais links aqui */}
       </nav>
       <div className="dashboard-content">

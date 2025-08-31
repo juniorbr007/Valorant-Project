@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './PerformancePage.css'
 
 // Importando TODOS os nossos componentes de gráfico
 import PerformanceChart from '../PerformanceChart/PerformanceChart';
@@ -7,6 +8,7 @@ import ScatterPlotChart from '../ScatterPlotChart/ScatterPlotChart';
 import DistributionChart from '../DistributionChart/DistributionChart';
 import RolePerformanceChart from '../RolePerformanceChart/RolePerformanceChart';
 import ClusterPieChart from '../ClusterPieChart/ClusterPieChart'; // 1. O GRÁFICO QUE FALTAVA
+import ModelResultCard from '../ModelResultCard/ModelResultCard';
 
 // --- ESTILOS DOS CONTAINERS ---
 const chartContainerStyle = {
@@ -28,6 +30,18 @@ const PerformancePage = () => {
   const [matches, setMatches] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [modelResults, setModelResults] = useState(null);
+  const [isModelRunning, setIsModelRunning] = useState(false);
+
+  const runModels = async () => {
+    setIsModelRunning(true);
+    setModelResults(null);
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/run-classifier`);
+    const data = await response.json();
+    setModelResults(data);
+    setIsModelRunning(false);
+};
+
 
   useEffect(() => {
     const fetchMatchData = async () => {

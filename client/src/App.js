@@ -10,14 +10,15 @@ import Navbar from './components/Navbar/Navbar';
 import AgentsPage from './components/AgentsPage/AgentsPage';
 import AgentDetailPage from './components/AgentDetailPage/AgentDetailPage';
 
-// Importando os novos componentes do Dashboard
+// Importando os componentes do Dashboard
 import DashboardLayout from './components/DashboardLayout/DashboardLayout';
 import DashboardOverview from './components/DashboardOverview/DashboardOverview';
 import PerformancePage from './components/PerformancePage/PerformancePage';
+import ModelLabPage from './components/ModelLabPage/ModelLabPage';
 
 function App() {
-  // Lembrete: Mudar para 'false' antes do deploy final.
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  // Inicia como 'true' em ambiente de desenvolvimento, e 'false' em produção.
+  const [isAuthenticated, setIsAuthenticated] = useState(process.env.NODE_ENV === 'development');
 
   const handleLogin = () => { setIsAuthenticated(true); };
   const handleLogout = () => { setIsAuthenticated(false); };
@@ -54,6 +55,8 @@ function App() {
               <Route index element={<DashboardOverview />} />
               {/* Rota aninhada para os gráficos */}
               <Route path="charts" element={<PerformancePage />} />
+              {/* Rota aninhada para o laboratório de modelos */}
+              <Route path="lab" element={<ModelLabPage />} />
             </Route>
 
             {/* ROTAS DE AGENTES */}

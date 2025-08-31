@@ -1,0 +1,87 @@
+.performance-page-container {
+  padding: 0 10px;
+}
+
+.chart-container-full, 
+.chart-container-half,
+.chart-container-large {
+  background-color: #2c2c2c;
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #444;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.chart-container-full { height: 450px; }
+.chart-container-half { height: 450px; }
+.chart-container-large { height: 550px; } /* Estilo para o gráfico de radar */
+
+/* Grid para os gráficos menores */
+.charts-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+/* --- SEÇÃO DO LABORATÓRIO DE MODELOS --- */
+.model-lab-container {
+  background-color: #2c2c2c;
+  border-radius: 10px;
+  padding: 30px;
+  border: 1px solid #444;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.model-lab-container h2 {
+  font-family: 'Teko', sans-serif;
+  font-size: 2.5rem;
+  color: #fd4556;
+  margin: 0 0 10px 0;
+}
+
+.model-lab-container p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.1rem;
+  color: #ccc;
+  max-width: 600px;
+  margin: 0 auto 25px auto;
+  line-height: 1.6;
+}
+
+.run-model-button {
+  padding: 12px 24px;
+  font-family: 'Teko', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+  background-color: #fd4556;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 30px;
+}
+
+.run-model-button:hover:not(:disabled) {
+  background-color: #fff;
+  color: #fd4556;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(253, 69, 86, 0.4);
+}
+
+.run-model-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .charts-grid-container {
+    grid-template-columns: 1fr;
+  }
+}
