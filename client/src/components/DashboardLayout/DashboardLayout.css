@@ -1,0 +1,29 @@
+.dashboard-layout {
+  padding: 2rem 40px;
+}
+
+.dashboard-nav {
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid #444;
+  margin-bottom: 30px;
+}
+
+.dashboard-nav a {
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #aaa;
+  font-family: 'Teko', sans-serif;
+  font-size: 1.3rem;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.dashboard-nav a:hover {
+  color: #fff;
+}
+
+.dashboard-nav a.active {
+  color: #fd4556;
+  border-bottom-color: #fd4556;
+}

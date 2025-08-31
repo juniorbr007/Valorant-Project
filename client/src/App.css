@@ -1,0 +1,10 @@
+/* client/src/App.css */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Garante que o container ocupe no mínimo a altura toda da tela */
+}
+
+.main-content {
+  flex: 1; /* Esta é a linha mágica! Faz este elemento "crescer" para ocupar todo o espaço vazio, empurrando o footer para baixo. */
+}

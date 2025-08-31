@@ -1,0 +1,6 @@
+.main-navbar { display: flex; justify-content: space-between; align-items: center; background-color: #1a1a1a; padding: 0 40px; border-bottom: 1px solid #333; height: 70px; }
+.nav-brand { font-family: 'Teko', sans-serif; font-size: 2rem; color: #fd4556; }
+.nav-links a { color: #ccc; text-decoration: none; padding: 10px 15px; font-family: 'Roboto', sans-serif; font-size: 1rem; transition: color 0.3s ease; }
+.nav-links a:hover { color: #fff; }
+.nav-links a.active { color: #fd4556; border-bottom: 2px solid #fd4556; }
+.logout-button-nav { /* Estilo similar ao botão de logout do dashboard */ }

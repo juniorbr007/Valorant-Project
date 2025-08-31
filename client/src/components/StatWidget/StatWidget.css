@@ -1,0 +1,32 @@
+.stat-widget {
+  background-color: #2c2c2c;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: left;
+  border: 1px solid #444;
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Espaço entre o ícone e o texto */
+}
+
+.stat-widget-icon {
+  font-size: 2.5rem; /* Tamanho do ícone */
+  color: #fd4556; /* Vermelho Valorant */
+}
+
+.stat-widget-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #aaa;
+  font-family: 'Roboto', sans-serif;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.stat-widget-info p {
+  margin: 5px 0 0;
+  font-size: 2rem;
+  color: #fff;
+  font-family: 'Teko', sans-serif;
+  font-weight: 700;
+}

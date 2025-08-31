@@ -1,0 +1,78 @@
+/* Garante que o card possa posicionar o badge de anomalia */
+.match-card {
+  position: relative; 
+  background-color: #2c2c2c;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s ease-in-out;
+  width: 100%; /* Garante que o card ocupe a largura do container */
+  box-sizing: border-box; /* Garante que o padding não afete a largura total */
+}
+
+.match-card:hover {
+  transform: translateY(-5px);
+}
+
+.match-card.victory {
+  border-left: 5px solid #4caf50; /* Verde para vitória */
+}
+
+.match-card.defeat {
+  border-left: 5px solid #f44336; /* Vermelho para derrota */
+}
+
+.match-info, .match-kda, .match-score {
+  flex: 1;
+  text-align: center;
+}
+
+.match-info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.match-info p {
+  margin: 5px 0 0;
+  color: #aaa;
+}
+
+.match-kda {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+/* Estilo e posicionamento do ícone de anomalia */
+.anomaly-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  cursor: help; /* Mostra um '?' ao passar o mouse, indicando o tooltip */
+}
+
+.anomaly-badge.positive { color: #ffd700; } /* Cor de ouro para performance boa */
+.anomaly-badge.negative { color: #f44336; } /* Vermelho para performance ruim */
+
+/* Animação do brilho */
+@keyframes positive-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(76, 175, 80, 0.4); }
+  50% { box-shadow: 0 0 25px rgba(76, 175, 80, 0.8); }
+}
+
+@keyframes negative-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(244, 67, 54, 0.4); }
+  50% { box-shadow: 0 0 25px rgba(244, 67, 54, 0.8); }
+}
+
+/* Aplica o brilho animado aos cards de anomalia */
+.match-card.anomaly.victory {
+  animation: positive-glow 2s infinite;
+}
+
+.match-card.anomaly.defeat {
+  animation: negative-glow 2s infinite;
+}
