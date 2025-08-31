@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './DashboardOverview.css';
-import { mockMatches } from '../../data/mockMatchData';
+import { mockMatches } from '../../shared/mockMatchData';
 
 // Importando todos os componentes que esta página utiliza
 import MatchCard from '../MatchCard/MatchCard';
