@@ -54,12 +54,14 @@ app.get('/auth/riot', (req, res) => {
 
 // ROTA DE CALLBACK ATUALIZADA PARA MONGODB
 app.get('/auth/riot/callback', async (req, res) => {
+  console.log("-> Rota de callback acionada!");
   try {
     const mockUserData = {
       puuid: 'PUUID_DO_JOGADOR_SIMULADO',
       gameName: 'Jogador',
       tagLine: 'MONGO' // Mudado para sabermos que veio do novo código
     };
+    console.log("-> Tentando escrever no MongoDB..."); 
 
     // Salva ou atualiza os dados do usuário na coleção 'users'
     // A opção 'upsert: true' faz com que, se o documento não existir, ele seja criado.
