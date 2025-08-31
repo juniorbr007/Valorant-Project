@@ -6,7 +6,7 @@ const LoginPage = ({ handleLogin }) => {
 
   const onLoginClick = () => {
     // Por enquanto, apenas chamamos a função de simulação.
-    // No futuro, a chamada para window.location.href irá aqui.
+    window.location.href = 'https://valorant-7w4h.onrender.com/auth/riot';
     handleLogin(); 
   };
 
