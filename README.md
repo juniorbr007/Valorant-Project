@@ -105,10 +105,10 @@ Para executar este projeto no seu ambiente de desenvolvimento local, siga os pas
 │   └── classifier_model.py
 └── README.md
 
-
----
+```
 
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
 
