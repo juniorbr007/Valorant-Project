@@ -19,10 +19,11 @@ import RoadmapPage from './components/pages/RoadmapPage/RoadmapPage';
 
 function App() {
   // Inicia como 'true' em ambiente de desenvolvimento, e 'false' em produção.
-  const [isAuthenticated, setIsAuthenticated] = useState(process.env.NODE_ENV === 'development');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleLogin = () => { setIsAuthenticated(true); };
   const handleLogout = () => { setIsAuthenticated(false); };
+  const REQUIRE_LOGIN = false; // Mude para 'true' se quiser exigir login
 
   return (
     <Router>
@@ -35,49 +36,59 @@ function App() {
             <Route 
               path="/" 
               element={
-                !isAuthenticated ? (
-                  <LoginPage handleLogin={handleLogin} />
+                isAuthenticated ? (
+                  <Navigate to="/dashboard" replace />
                 ) : (
-                  <Navigate to="/dashboard" />
+                  <LoginPage handleLogin={handleLogin} />
                 )
               } 
             />
 
-            {/* ROTA PRINCIPAL DO DASHBOARD (ANINHADA) */}
+            {/* ROTAS PROTEGIDAS, mas com interruptor */}
             <Route 
-              path="/dashboard" 
+              path="/dashboard/*" // Use /* para aninhar corretamente
               element={
-                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                REQUIRE_LOGIN ? (
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                    <DashboardLayout />
+                  </ProtectedRoute>
+                ) : (
                   <DashboardLayout />
-                </ProtectedRoute>
+                )
               }
             >
-              {/* Rota aninhada padrão (quando se acessa /dashboard) */}
               <Route index element={<DashboardOverview />} />
-              {/* Rota aninhada para os gráficos */}
               <Route path="charts" element={<PerformancePage />} />
-              {/* Rota aninhada para o laboratório de modelos */}
               <Route path="lab" element={<ModelLabPage />} />
               <Route path="roadmap" element={<RoadmapPage />} />
             </Route>
 
-            {/* ROTAS DE AGENTES */}
+            {/* ROTAS DOS AGENTES */}
             <Route 
               path="/agents" 
               element={
-                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                REQUIRE_LOGIN ? (
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                    <AgentsPage />
+                  </ProtectedRoute>
+                ) : (
                   <AgentsPage />
-                </ProtectedRoute>
+                )
               } 
             />
             <Route 
               path="/agents/:agentId" 
               element={
-                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                REQUIRE_LOGIN ? (
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                    <AgentDetailPage />
+                  </ProtectedRoute>
+                ) : (
                   <AgentDetailPage />
-                </ProtectedRoute>
+                )
               } 
             />
+
           </Routes>
         </main>
         
