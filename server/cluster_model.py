@@ -1,71 +1,61 @@
 # server/cluster_model.py
 
-import os
-from pymongo import MongoClient
-from dotenv import load_dotenv
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
+import sys
+import json
+import numpy as np
 
-# Carrega as variáveis de ambiente (nosso MONGODB_URI) do arquivo .env
-load_dotenv()
-
-def run_clustering():
-    # 1. CONECTAR AO BANCO DE DADOS
-    uri = os.getenv("MONGODB_URI")
-    client = MongoClient(uri)
-    db = client["valorant-stats"]
-    matches_collection = db["matches"] # Supondo que salvaremos as partidas aqui
+def run_clustering(matches_json):
+    matches_data = json.loads(matches_json)
     
-    # Busca todas as partidas do banco de dados (limitado a 1000 por segurança)
-    matches_data = list(matches_collection.find({}).limit(1000))
+    if len(matches_data) < 3: # KMeans precisa de pelo menos 3 amostras para 3 clusters
+        return json.dumps({"error": "Dados insuficientes para clustering."})
+
+    df = pd.DataFrame(matches_data)
     
-    if len(matches_data) < 10: # O K-Means precisa de um mínimo de dados
-        print("Dados insuficientes para clustering.")
-        return
+    # Adiciona o ID original para podermos mapear os resultados de volta
+    original_ids = [match.get('id', f'index_{i}') for i, match in enumerate(matches_data)]
+    df['original_id'] = original_ids
 
-    print(f"Encontradas {len(matches_data)} partidas para analisar.")
-
-    # 2. PREPARAR OS DADOS COM PANDAS
-    # Criamos um DataFrame (uma tabela) com as estatísticas do jogador
-    player_stats_list = [match['playerStats'] for match in matches_data]
-    df = pd.DataFrame(player_stats_list)
-
-    # Seleciona as características (features) que vamos usar no modelo
-    features = df[['score', 'kills', 'deaths', 'assists', 'headshotPercentage', 'firstKills']]
-    
-    # 3. PRÉ-PROCESSAMENTO (MUITO IMPORTANTE PARA K-MEANS)
-    # Normalizamos os dados para que todas as features tenham a mesma escala
+    features = df[['score', 'kills', 'deaths', 'assists', 'firstKills']]
     scaler = StandardScaler()
-    scaled_features = scaler.fit_transform(features)
+    features_scaled = scaler.fit_transform(features)
 
-    # 4. TREINAR O MODELO K-MEANS
-    # Vamos agrupar as partidas em 3 clusters (estilos de jogo)
     kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
-    kmeans.fit(scaled_features)
+    df['cluster'] = kmeans.fit_predict(features_scaled)
+
+    # Mapeia os clusters para arquétipos (como antes)
+    cluster_centers = kmeans.cluster_centers_
+    aggression_scores = cluster_centers[:, 1] + cluster_centers[:, 4] # Kills + First Kills
+    cluster_map_indices = np.argsort(aggression_scores)
+    archetype_map = {
+        cluster_map_indices[0]: "Âncora",
+        cluster_map_indices[1]: "Tático",
+        cluster_map_indices[2]: "Agressivo"
+    }
+    df['archetype'] = df['cluster'].map(archetype_map)
+
+    # --- LÓGICA DE RETORNO APRIMORADA ---
     
-    # Adiciona os resultados (os clusters) de volta ao nosso DataFrame
-    df['cluster'] = kmeans.labels_
+    # 1. Calcula os dados para o gráfico de pizza (como antes)
+    pie_data = df['archetype'].value_counts(normalize=True) * 100
+    pie_chart_data = [{'archetype': k, 'percentage': v} for k, v in pie_data.items()]
 
-    # Mapeia os números do cluster (0, 1, 2) para nomes que fazem sentido
-    cluster_map = {0: 'Tático', 1: 'Agressivo', 2: 'Suporte'} # Este mapeamento pode variar
-    df['predictedCluster'] = df['cluster'].map(cluster_map)
+    # 2. Cria uma lista de classificações para cada partida
+    match_classifications = df[['original_id', 'archetype']].to_dict(orient='records')
+    # Renomeia 'original_id' para 'id' para consistência
+    for item in match_classifications:
+        item['id'] = item.pop('original_id')
 
-    print("Clustering concluído. Atualizando o banco de dados...")
+    # 3. Retorna um objeto contendo AMBAS as informações
+    final_result = {
+        "pieChartData": pie_chart_data,
+        "matchClassifications": match_classifications
+    }
 
-    # 5. ATUALIZAR O BANCO DE DADOS COM OS RESULTADOS
-    for index, row in df.iterrows():
-        match_id = matches_data[index]['matchId']
-        cluster_result = row['predictedCluster']
-        
-        # Atualiza o documento da partida no MongoDB com o novo campo
-        matches_collection.update_one(
-            {'matchId': match_id},
-            {'$set': {'predictedCluster': cluster_result}}
-        )
-
-    print("Banco de dados atualizado com os resultados do clustering!")
-
+    print(json.dumps(final_result))
 
 if __name__ == "__main__":
-    run_clustering()
+    run_clustering(sys.argv[1])

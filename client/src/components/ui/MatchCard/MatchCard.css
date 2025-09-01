@@ -1,0 +1,85 @@
+/* client/src/components/MatchCard/MatchCard.css */
+
+.match-card-container {
+  position: relative; /* Essencial para posicionar o badge */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2c2c2c;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 12px;
+  border-left: 5px solid #555;
+  transition: all 0.3s ease;
+}
+
+.match-card-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.match-card-container.win { border-left-color: #4caf50; }
+.match-card-container.loss { border-left-color: #fd4556; }
+
+/* ... (as seções .match-info, .match-stats, etc., continuam as mesmas) ... */
+.match-info, .match-stats, .match-outcome { display: flex; align-items: center; gap: 20px; }
+.match-info { flex-direction: column; align-items: flex-start; min-width: 100px; }
+.map { font-family: 'Teko', sans-serif; font-size: 1.4rem; font-weight: 700; color: #fafafa; line-height: 1; }
+.agent { font-family: 'Roboto', sans-serif; font-size: 0.9rem; color: #aaa; }
+.match-stats { font-family: 'Roboto', sans-serif; text-align: center; }
+.kda, .acs { display: flex; flex-direction: column; }
+.stat-label { font-size: 0.75rem; color: #888; font-weight: 700; text-transform: uppercase; }
+.kda span:last-child { font-size: 1rem; color: #ddd; }
+.acs span:last-child { font-size: 1.2rem; font-weight: 700; color: #fafafa; }
+.match-outcome { font-family: 'Teko', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; }
+.win .match-outcome { color: #4caf50; }
+.loss .match-outcome { color: #fd4556; }
+
+
+/* --- Badge de Anomalia (Posicionamento e Estilo) --- */
+.anomaly-badge {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 1.5rem;
+  cursor: help;
+}
+
+.anomaly-badge.positive { color: #2196f3; } /* Azul para positiva */
+.anomaly-badge.negative { color: #ff9800; } /* Laranja para negativa */
+
+
+/* --- Animações de Brilho para Anomalias --- */
+@keyframes positive-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(33, 150, 243, 0.4); } /* Sombra azul */
+  50% { box-shadow: 0 0 25px rgba(33, 150, 243, 0.8); }
+}
+
+@keyframes negative-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(255, 152, 0, 0.4); } /* Sombra laranja */
+  50% { box-shadow: 0 0 25px rgba(255, 152, 0, 0.8); }
+}
+
+/* Aplica o brilho animado aos cards com a classe .anomaly */
+.match-card-container.anomaly.win {
+  animation: positive-glow 2.5s infinite;
+}
+
+.match-card-container.anomaly.loss {
+  animation: negative-glow 2.5s infinite;
+}
+
+.archetype-tag {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-top: 5px;
+}
+
+.archetype-tag.agressivo { background-color: #c43843; }
+.archetype-tag.tático { background-color: #3b82c4; }
+.archetype-tag.âncora { background-color: #6a48c3; }

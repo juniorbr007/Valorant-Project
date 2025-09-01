@@ -89,3 +89,81 @@
   font-weight: bold;
   font-size: 1.2rem;
 }
+/* Adicione este código ao final do seu ModelResultCard.css */
+
+.detailed-metrics {
+  margin-top: 20px;
+  border-top: 1px solid #444;
+  padding-top: 15px;
+}
+
+.detailed-metrics h4 {
+  font-family: 'Teko', sans-serif;
+  font-size: 1.3rem;
+  color: #ccc;
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.95rem;
+  background-color: #2a2a2a;
+  border-radius: 5px;
+  margin-bottom: 8px;
+}
+
+.metric-item span {
+  color: #bbb;
+}
+
+.metric-item strong {
+  color: #fafafa;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* client/src/components/ModelResultCard/ModelResultCard.css */
+
+/* (Mantenha todos os estilos que você já tem) */
+
+/* Garanta que estes estilos existam ou adicione-os */
+.detailed-metrics {
+  margin-top: 20px;
+  border-top: 1px solid #444;
+  padding-top: 15px;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  background-color: #2a2a2a;
+  border-radius: 5px;
+  margin-bottom: 8px;
+}
+
+.metric-item span {
+  color: #bbb;
+}
+
+.metric-item strong {
+  color: #fafafa;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* NOVO ESTILO para o desvio padrão */
+.metric-item .std-dev {
+  font-size: 0.85em;
+  font-weight: 400;
+  color: #999;
+  margin-left: 8px;
+}

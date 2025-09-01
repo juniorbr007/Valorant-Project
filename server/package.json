@@ -13,10 +13,12 @@
   "type": "commonjs",
   "dependencies": {
     "axios": "^1.11.0",
+    "chartjs-chart-error-bars": "^4.4.4",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "mongodb": "^6.19.0"
+    "mongodb": "^6.19.0",
+    "mongoose": "^8.18.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

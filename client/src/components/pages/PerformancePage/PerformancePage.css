@@ -1,0 +1,46 @@
+/* client/src/components/PerformancePage/PerformancePage.css */
+
+.performance-page-container {
+  padding: 0 10px;
+}
+
+/* Estilo unificado para os containers dos gráficos */
+.chart-container-full, 
+.chart-container-half,
+.chart-container-large {
+  background-color: #2c2c2c;
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #444;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.chart-container-full { height: 450px; }
+.chart-container-half { height: 450px; }
+.chart-container-large { height: 550px; } /* Estilo para o gráfico de radar */
+
+/* Grid para os gráficos menores */
+.charts-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+/* Mensagens de carregamento e erro */
+.loading-message, .error-message {
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 50px;
+  color: #ccc;
+}
+.error-message {
+  color: #fd4556;
+}
+
+/* Responsividade para a grade */
+@media (max-width: 1200px) {
+  .charts-grid-container {
+    grid-template-columns: 1fr;
+  }
+}

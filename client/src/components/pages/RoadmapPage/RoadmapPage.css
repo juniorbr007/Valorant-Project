@@ -1,0 +1,167 @@
+.roadmap-container {
+  padding: 40px;
+  text-align: center;
+  color: #fafafa;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* HEADER CARD COM FUNDO MAIS ESCURO */
+.roadmap-header-card {
+  background: rgba(6, 6, 6, 0.9); /* Alterado de (44,44,44,0.5) para um tom mais escuro e opaco */
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 60px;
+  border: 1px solid #444;
+}
+
+.roadmap-header-card h1 {
+  font-family: 'Teko', sans-serif;
+  font-size: 3.5rem;
+  color: #fd4556;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(253, 69, 86, 0.5);
+}
+
+.roadmap-header-card .roadmap-subtitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2rem;
+  color: #ccc;
+  max-width: 800px;
+  margin: 10px auto 0 auto;
+  line-height: 1.6;
+}
+
+/* ESTRUTURA DA TIMELINE */
+.timeline-container {
+  position: relative;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  width: 4px;
+  background-color: #333;
+  top: 0;
+  bottom: 0;
+  left: 28px;
+  border-radius: 2px;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 50px;
+  padding-left: 80px;
+  opacity: 0; /* Começa invisível para a animação */
+  animation: slideUpFadeIn 0.6s ease-out forwards;
+}
+
+/* ANIMAÇÃO DE ENTRADA COM DELAY */
+.timeline-item:nth-child(1) { animation-delay: 0.2s; }
+.timeline-item:nth-child(2) { animation-delay: 0.4s; }
+.timeline-item:nth-child(3) { animation-delay: 0.6s; }
+.timeline-item:nth-child(4) { animation-delay: 0.8s; }
+
+.timeline-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  z-index: 1;
+  border: 4px solid #333;
+  transition: all 0.3s ease;
+}
+
+.timeline-content {
+  background: #2c2c2c;
+  border-radius: 10px;
+  padding: 20px 25px;
+  position: relative;
+  border: 1px solid #444;
+  transition: all 0.3s ease;
+}
+
+.timeline-item:hover .timeline-icon {
+  transform: scale(1.1);
+}
+
+.timeline-item:hover .timeline-content {
+  border-color: #fd4556;
+  box-shadow: 0 0 15px rgba(253, 69, 86, 0.2);
+}
+
+.timeline-content h3 {
+  font-family: 'Teko', sans-serif;
+  font-size: 2.2rem;
+  margin: 0 0 10px 0;
+}
+
+.phase-description {
+  font-family: 'Roboto', sans-serif;
+  font-style: italic;
+  color: #aaa;
+  margin-bottom: 15px;
+  border-left: 3px solid #555;
+  padding-left: 10px;
+}
+
+.timeline-content ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.timeline-content li {
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 10px;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.05rem;
+}
+
+/* CORES E ÍCONES POR STATUS */
+.timeline-item.completed .timeline-icon { background-color: #1a665f; border-color: #2a9d8f; }
+.timeline-item.completed h3 { color: #2a9d8f; }
+.timeline-item.completed li svg { color: #2a9d8f; font-size: 1.2rem; }
+
+.timeline-item.in-progress .timeline-icon { background-color: #b39344; border-color: #e9c46a; }
+.timeline-item.in-progress h3 { color: #e9c46a; }
+.timeline-item.in-progress li strong { color: #e9c46a; }
+.timeline-item.in-progress li svg { color: #e9c46a; font-size: 1.2rem; }
+
+.timeline-item.planned .timeline-icon { background-color: #495057; border-color: #6c757d; }
+.timeline-item.planned h3 { color: #6c757d; }
+.timeline-item.planned li strong { color: #999; }
+.timeline-item.planned li svg { color: #6c757d; font-size: 1.2rem; }
+
+/* Animação do ícone de "Em Andamento" */
+.icon-spin {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Animação de entrada dos itens da timeline */
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

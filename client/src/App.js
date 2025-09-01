@@ -3,18 +3,19 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState } from 'react';
 
 // Importando todos os componentes de layout e página
-import LoginPage from './components/LoginPage/LoginPage';
-import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-import Footer from './components/Footer/Footer';
-import Navbar from './components/Navbar/Navbar';
-import AgentsPage from './components/AgentsPage/AgentsPage';
-import AgentDetailPage from './components/AgentDetailPage/AgentDetailPage';
+import LoginPage from './components/auth/LoginPage/LoginPage';
+import ProtectedRoute from './components/auth/ProtectedRoute/ProtectedRoute';
+import Footer from './components/layouts/Footer/Footer';
+import Navbar from './components/layouts/Navbar/Navbar';
+import AgentsPage from './components/pages/AgentsPage/AgentsPage';
+import AgentDetailPage from './components/pages/AgentDetailPage/AgentDetailPage';
 
 // Importando os componentes do Dashboard
-import DashboardLayout from './components/DashboardLayout/DashboardLayout';
-import DashboardOverview from './components/DashboardOverview/DashboardOverview';
-import PerformancePage from './components/PerformancePage/PerformancePage';
-import ModelLabPage from './components/ModelLabPage/ModelLabPage';
+import DashboardLayout from './components/layouts/DashboardLayout/DashboardLayout';
+import DashboardOverview from './components/pages/DashboardOverview/DashboardOverview';
+import PerformancePage from './components/pages/PerformancePage/PerformancePage';
+import ModelLabPage from './components/pages/ModelLabPage/ModelLabPage';
+import RoadmapPage from './components/RoadmapPage/RoadmapPage';
 
 function App() {
   // Inicia como 'true' em ambiente de desenvolvimento, e 'false' em produção.
@@ -57,6 +58,7 @@ function App() {
               <Route path="charts" element={<PerformancePage />} />
               {/* Rota aninhada para o laboratório de modelos */}
               <Route path="lab" element={<ModelLabPage />} />
+              <Route path="roadmap" element={<RoadmapPage />} />
             </Route>
 
             {/* ROTAS DE AGENTES */}

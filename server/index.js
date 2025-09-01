@@ -239,6 +239,37 @@ app.get('/api/run-classifier', (req, res) => {
   });
 });
 
+// NOVA ROTA PARA PREVISÃO EM TEMPO REAL
+app.post('/api/predict', (req, res) => {
+  console.log("-> Recebida requisição de previsão com os dados:", req.body);
+
+  const { spawn } = require('child_process');
+
+  // Converte os dados recebidos para uma string JSON para passar ao Python
+  const dataString = JSON.stringify(req.body);
+
+  // Executa o script de previsão, passando os dados como argumento
+  const pythonProcess = spawn('python', ['predict_model.py', dataString]);
+
+  let resultData = '';
+  pythonProcess.stdout.on('data', (data) => {
+    resultData += data.toString();
+  });
+
+  pythonProcess.stderr.on('data', (data) => {
+    console.error(`[Python Predict ERROR]: ${data}`);
+  });
+
+  pythonProcess.on('close', (code) => {
+    if (code === 0) {
+      console.log("-> Previsão realizada com sucesso:", resultData);
+      res.status(200).json(JSON.parse(resultData));
+    } else {
+      res.status(500).send("Erro durante a previsão.");
+    }
+  });
+});
+
 // --- INICIALIZAÇÃO DO SERVIDOR ---
 // Garante que o servidor só comece a escutar por requisições DEPOIS de conectar ao banco
 connectDB().then(() => {
