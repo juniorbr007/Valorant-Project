@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './DashboardOverview.css';
-import MatchCard from '../../MatchCard/MatchCard';
-import StatWidget from '../../StatWidget/StatWidget';
+import MatchCard from '../../ui/MatchCard/MatchCard';
+import StatWidget from '../../ui/StatWidget/StatWidget';
 import { RiTrophyLine, RiSwordLine, RiFocus3Line, RiFlashlightLine, RiHeadphoneLine } from 'react-icons/ri';
 
 const DashboardOverview = () => {

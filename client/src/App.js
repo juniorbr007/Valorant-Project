@@ -15,7 +15,7 @@ import DashboardLayout from './components/layouts/DashboardLayout/DashboardLayou
 import DashboardOverview from './components/pages/DashboardOverview/DashboardOverview';
 import PerformancePage from './components/pages/PerformancePage/PerformancePage';
 import ModelLabPage from './components/pages/ModelLabPage/ModelLabPage';
-import RoadmapPage from './components/RoadmapPage/RoadmapPage';
+import RoadmapPage from './components/pages/RoadmapPage/RoadmapPage';
 
 function App() {
   // Inicia como 'true' em ambiente de desenvolvimento, e 'false' em produção.

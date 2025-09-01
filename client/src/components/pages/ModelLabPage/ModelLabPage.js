@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './ModelLabPage.css';
-import ModelResultCard from '../../ModelResultCard/ModelResultCard';
+import ModelResultCard from '../../ui/ModelResultCard/ModelResultCard'
 import ModelComparisonChart from '../../charts/ModelComparisonChart/ModelComparisonChart';
-import PredictionSimulator from '../../PredictionSimulator/PredictionSimulator'; 
+import PredictionSimulator from '../../ui/PredictionSimulator/PredictionSimulator'; 
 
 const ModelLabPage = () => {
   const [modelResults, setModelResults] = useState([]);
