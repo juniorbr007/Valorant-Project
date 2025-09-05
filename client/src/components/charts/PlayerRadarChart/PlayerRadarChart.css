@@ -1,0 +1,29 @@
+.radar-chart-container {
+  background-color: rgba(30, 41, 59, 0.5);
+  padding: 2rem;
+  border: 1px solid #475569;
+  border-radius: 8px;
+}
+
+.radar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.radar-header h3 {
+  color: #f1f5f9;
+  margin: 0;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.player-select {
+  background-color: #1e293b;
+  color: #f1f5f9;
+  border: 1px solid #475569;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-family: 'Inter', sans-serif;
+}

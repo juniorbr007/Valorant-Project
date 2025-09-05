@@ -1,0 +1,34 @@
+.acs-chart-container {
+  background-color: rgba(30, 41, 59, 0.5);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #475569;
+}
+
+.acs-chart-container h3 {
+  color: #f1f5f9;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 2.5rem;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 400px;
+}
+
+.acs-custom-tooltip {
+  background-color: rgba(15, 25, 35, 0.9);
+  border: 1px solid #00ffff;
+  padding: 10px;
+  border-radius: 4px;
+  color: #e2e8f0;
+}
+
+.acs-custom-tooltip .label {
+  font-weight: bold;
+  color: #00ffff;
+}
