@@ -1,0 +1,26 @@
+.pie-chart-container {
+  background-color: rgba(30, 41, 59, 0.5);
+  padding: 2rem;
+  border: 1px solid #475569;
+  border-radius: 8px;
+}
+
+.pie-chart-container h3 {
+  color: #f1f5f9;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+/* Garante que o texto da legenda seja legível */
+.recharts-legend-item-text {
+  color: #cbd5e1 !important;
+}
+
+/* Garante que o texto dentro do gráfico seja legível */
+.recharts-pie-label-text {
+  fill: #f1f5f9;
+  font-size: 14px;
+}
