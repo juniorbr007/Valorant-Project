@@ -1,4 +1,4 @@
-// server/index.js - VERSÃO AJUSTADA PARA SERVIR DADOS DETALHADOS
+// server/index.js - VERSÃO DEFINITIVA E COMPLETA
 
 const express = require('express');
 const cors = require('cors');
@@ -6,9 +6,8 @@ const axios = require('axios');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const { spawn } = require('child_process');
-// Adicionados para ler arquivos do sistema
-const fs = require('fs');
-const path = require('path');
+const fs = require('fs'); // Módulo de arquivos adicionado
+const path = require('path'); // Módulo de caminhos adicionado
 
 // Inicialização do Express
 const app = express();
@@ -76,20 +75,12 @@ app.get('/auth/riot/callback', async (req, res) => {
   }
 });
 
-// ROTA PARA ACIONAR O MODELO DE CLUSTERING
+// NOVA ROTA PARA ACIONAR O MODELO DE CLUSTERING
 app.get('/api/run-clustering', (req, res) => {
   console.log("-> Acionando o script de clustering em Python...");
-
   const pythonProcess = spawn('python', ['cluster_model.py']);
-
-  pythonProcess.stdout.on('data', (data) => {
-    console.log(`[Python Script]: ${data}`);
-  });
-
-  pythonProcess.stderr.on('data', (data) => {
-    console.error(`[Python Script ERROR]: ${data}`);
-  });
-
+  pythonProcess.stdout.on('data', (data) => console.log(`[Python Script]: ${data}`));
+  pythonProcess.stderr.on('data', (data) => console.error(`[Python Script ERROR]: ${data}`));
   pythonProcess.on('close', (code) => {
     if (code === 0) {
       console.log("-> Script de clustering finalizado com sucesso.");
@@ -107,48 +98,32 @@ app.get('/api/content', async (req, res) => {
     console.log("-> Rota /api/content acionada!");
     const apiKey = process.env.RIOT_API_KEY;
     if (!apiKey) throw new Error("A chave da API da Riot não foi configurada no .env");
-
     const riotApiUrl = `https://br.api.riotgames.com/val/content/v1/contents?locale=pt-BR`;
     const communityApiUrl = `https://valorant-api.com/v1/agents?language=pt-BR&isPlayableCharacter=true`;
-
     const [riotResponse, communityResponse] = await Promise.all([
       axios.get(riotApiUrl, { headers: { "X-Riot-Token": apiKey } }),
       axios.get(communityApiUrl)
     ]);
-
     const riotCharacters = riotResponse.data.characters;
     const communityAgentsData = communityResponse.data.data;
-
     const playableAgentNames = riotCharacters
       .filter(character => character.name !== "Null UI Data!")
       .map(agent => agent.name.toLowerCase());
-
-    const iconMap = {};
-    communityAgentsData.forEach(agent => {
-      iconMap[agent.displayName.toLowerCase()] = agent.displayIcon;
-    });
-
     const finalAgentList = communityAgentsData
       .filter(agent => playableAgentNames.includes(agent.displayName.toLowerCase()))
-      .map(agent => ({
-        id: agent.uuid,
-        name: agent.displayName,
-        displayIcon: agent.displayIcon
-      }));
-
+      .map(agent => ({ id: agent.uuid, name: agent.displayName, displayIcon: agent.displayIcon }));
     console.log(`-> ${finalAgentList.length} agentes enriquecidos com ícones encontrados.`);
     res.status(200).json(finalAgentList);
-
   } catch (error) {
     console.error("-> ERRO ao buscar conteúdo enriquecido:", error.response ? error.response.data : error.message);
     res.status(500).json({ message: "Erro ao buscar dados dos agentes." });
   }
 });
 
-// ROTA PARA "SEMEAR" O BANCO DE DADOS (Mantida por enquanto)
+// ROTA PARA "SEMEAR" O BANCO DE DADOS
 app.get('/api/seed-database', async (req, res) => {
   try {
-    console.log("-> Semeando o banco de dados com dados fictícios antigos...");
+    console.log("-> Semeando o banco de dados com dados fictícios...");
     const { mockMatches } = require('../client/src/shared/mockMatchData');
     const matchesCollection = db.collection('matches');
     await matchesCollection.deleteMany({});
@@ -161,14 +136,12 @@ app.get('/api/seed-database', async (req, res) => {
   }
 });
 
-// ROTA PARA BUSCAR PARTIDAS DO BANCO DE DADOS
+// ROTA PARA BUSCAR TODAS AS PARTIDAS DO DB
 app.get('/api/matches', async (req, res) => {
   try {
     const matchesCollection = db.collection('matches');
     const allMatches = await matchesCollection.find({}).toArray();
-    if (allMatches.length === 0) {
-      return res.status(404).json({ message: "Nenhuma partida encontrada no banco de dados." });
-    }
+    if (allMatches.length === 0) return res.status(404).json({ message: "Nenhuma partida encontrada no banco de dados." });
     console.log(`-> Enviando ${allMatches.length} partidas do MongoDB.`);
     res.status(200).json(allMatches);
   } catch (error) {
@@ -182,12 +155,8 @@ app.get('/api/run-classifier', (req, res) => {
   console.log("-> Acionando o script de classificação em Python...");
   const pythonProcess = spawn('python', ['classifier_model.py']);
   let resultData = '';
-  pythonProcess.stdout.on('data', (data) => {
-    resultData += data.toString();
-  });
-  pythonProcess.stderr.on('data', (data) => {
-    console.error(`[Python Script ERROR]: ${data}`);
-  });
+  pythonProcess.stdout.on('data', (data) => resultData += data.toString());
+  pythonProcess.stderr.on('data', (data) => console.error(`[Python Script ERROR]: ${data}`));
   pythonProcess.on('close', (code) => {
     if (code === 0) {
       console.log("-> Script de classificação finalizado com sucesso.");
@@ -205,12 +174,8 @@ app.post('/api/predict', (req, res) => {
   const dataString = JSON.stringify(req.body);
   const pythonProcess = spawn('python', ['predict_model.py', dataString]);
   let resultData = '';
-  pythonProcess.stdout.on('data', (data) => {
-    resultData += data.toString();
-  });
-  pythonProcess.stderr.on('data', (data) => {
-    console.error(`[Python Predict ERROR]: ${data}`);
-  });
+  pythonProcess.stdout.on('data', (data) => resultData += data.toString());
+  pythonProcess.stderr.on('data', (data) => console.error(`[Python Predict ERROR]: ${data}`));
   pythonProcess.on('close', (code) => {
     if (code === 0) {
       console.log("-> Previsão realizada com sucesso:", resultData);
@@ -222,28 +187,34 @@ app.post('/api/predict', (req, res) => {
 });
 
 
-// ==================================================================
-// NOVA ROTA PARA SERVIR OS DADOS DETALHADOS DA PARTIDA FICTÍCIA
-// ==================================================================
-app.get('/api/detailed-match', (req, res) => {
+// --- MUDANÇA PRINCIPAL ---
+// ROTA ATUALIZADA para buscar uma partida específica por ID
+app.get('/api/detailed-match/:matchId', (req, res) => {
   try {
-    console.log("-> Rota /api/detailed-match acionada!");
+    // 1. Pega o ID da partida a partir dos parâmetros da URL (ex: "match-1")
+    const { matchId } = req.params;
     
-    // Constrói o caminho para o nosso novo arquivo JSON mockado
-    const mockDataPath = path.join(__dirname, 'mocks', 'mockMatchData-complete.json');
-    
-    // Lê o arquivo de forma síncrona
-    const matchDataString = fs.readFileSync(mockDataPath, 'utf-8');
-    
-    // Converte a string do arquivo para um objeto JSON
-    const matchDataJson = JSON.parse(matchDataString);
-    
-    console.log("-> Enviando dados da partida detalhada.");
-    res.status(200).json(matchDataJson);
+    // 2. Medida de segurança: Garante que o ID é simples para evitar ataques
+    if (!/^[a-zA-Z0-9-]+$/.test(matchId)) {
+      return res.status(400).json({ message: "ID de partida inválido." });
+    }
 
+    // 3. Constrói o caminho para o arquivo JSON correspondente (ex: .../mocks/match-1.json)
+    const filePath = path.join(__dirname, 'mocks', `${matchId}.json`);
+
+    // 4. Verifica se o arquivo realmente existe antes de tentar ler
+    if (fs.existsSync(filePath)) {
+      const matchData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      console.log(`-> Enviando dados para a partida: ${matchId}`);
+      res.status(200).json(matchData);
+    } else {
+      // Se o arquivo não for encontrado, envia um erro 404
+      console.log(`-> Partida não encontrada: ${matchId}`);
+      res.status(404).json({ message: "Partida não encontrada." });
+    }
   } catch (error) {
-    console.error("-> ERRO ao ler ou servir o arquivo de mock detalhado:", error);
-    res.status(500).json({ message: "Não foi possível carregar os dados da partida." });
+    console.error(`-> ERRO ao buscar a partida ${req.params.matchId}:`, error);
+    res.status(500).json({ message: "Erro interno do servidor." });
   }
 });
 
@@ -254,4 +225,4 @@ connectDB().then(() => {
       console.log(`Servidor escutando na porta ${PORT}`);
   });
 });
-// --- FIM DA INICIALIZAÇÃO ---
+
