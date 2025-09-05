@@ -3,12 +3,12 @@ import React, { useState, useEffect } from 'react';
 import './PerformancePage.css'; 
 
 // Importando os componentes de gráfico
-import PerformanceChart from '../../charts/PerformanceChart/PerformanceChart';
-import AgentPerformanceChart from '../../charts/AgentPerformanceChart/AgentPerformanceChart';
-import ScatterPlotChart from '../../charts/ScatterPlotChart/ScatterPlotChart';
-import DistributionChart from '../../charts/DistributionChart/DistributionChart';
-import RolePerformanceChart from '../../charts/RolePerformanceChart/RolePerformanceChart';
-import ClusterPieChart from '../../charts/ClusterPieChart/ClusterPieChart';
+import PerformanceChart from '../../../../charts/PerformanceChart/PerformanceChart';
+import AgentPerformanceChart from '../../components/AgentPerformanceChart/AgentPerformanceChart';
+import ScatterPlotChart from '../../../../charts/ScatterPlotChart/ScatterPlotChart';
+import DistributionChart from '../../components/DistributionChart/DistributionChart';
+import RolePerformanceChart from '../../../../charts/RolePerformanceChart/RolePerformanceChart';
+import ClusterPieChart from '../../../../charts/ClusterPieChart/ClusterPieChart';
 
 
 const PerformancePage = () => {
