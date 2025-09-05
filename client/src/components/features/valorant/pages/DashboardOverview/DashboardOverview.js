@@ -7,7 +7,6 @@ import {
 
 // --- Componentes de Gráficos (Integrados para evitar erros de importação) ---
 
-// GRÁFICO 1: Player ACS Chart
 const PlayerACSchart = ({ matchData }) => {
   const chartData = useMemo(() => {
     const data = matchData.players.map(player => ({
@@ -49,7 +48,6 @@ const PlayerACSchart = ({ matchData }) => {
   );
 };
 
-// GRÁFICO 2: Damage Pie Chart
 const DamagePieChart = ({ matchData, teamId }) => {
   const chartData = useMemo(() => {
     const teamPlayers = matchData.players.filter(p => p.teamId === teamId);
@@ -77,7 +75,6 @@ const DamagePieChart = ({ matchData, teamId }) => {
   );
 };
 
-// GRÁFICO 3: Player Radar Chart
 const PlayerRadarChart = ({ matchData }) => {
   const [selectedPlayerPuuid, setSelectedPlayerPuuid] = useState(matchData.players[0].puuid);
 
@@ -180,13 +177,48 @@ const DashboardOverview = () => {
   const [matchHistory, setMatchHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
-  useEffect(() => { const fetchHistory = () => { setIsLoading(true); const mockMatchList = [ { id: 'match-1', map: 'Ascent', result: 'Vitória', score: '13-8', agent: 'Jett' }, { id: 'match-2', map: 'Bind', result: 'Derrota', score: '10-13', agent: 'Sage' }, { id: 'match-3', map: 'Haven', result: 'Vitória', score: '13-5', agent: 'Omen' }, { id: 'match-4', map: 'Split', result: 'Derrota', score: '2-13', agent: 'Cypher' }, { id: 'match-5', map: 'Icebox', result: 'Vitória', score: '14-12', agent: 'Reyna' }, ]; setMatchHistory(mockMatchList); setIsLoading(false); }; fetchHistory(); }, []);
-  const handleMatchSelect = async (matchId) => { setIsDetailLoading(true); try { const response = await fetch(`${process.env.REACT_APP_API_URL}/api/detailed-match`); const data = await response.json(); setSelectedMatch(data); } catch (err) { console.error("Falha ao buscar detalhes da partida:", err); } finally { setIsDetailLoading(false); } };
-  const handleGoBack = () => { setSelectedMatch(null); };
+  
+  useEffect(() => { 
+    const fetchHistory = async () => { 
+      setIsLoading(true); 
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/match-history`);
+        if (!response.ok) {
+          throw new Error('Falha ao buscar o histórico de partidas do servidor.');
+        }
+        const data = await response.json();
+        setMatchHistory(data);
+      } catch (err) {
+        console.error("Erro no useEffect ao buscar histórico:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }; 
+    fetchHistory(); 
+  }, []);
 
-  return (
+  const handleMatchSelect = async (matchId) => {
+    setIsDetailLoading(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/detailed-match/${matchId}`);
+      if (!response.ok) {
+        throw new Error(`Partida ${matchId} não encontrada no servidor (status: ${response.status}).`);
+      }
+      const data = await response.json();
+      setSelectedMatch(data);
+    } catch (err) {
+      console.error("Falha ao buscar detalhes da partida:", err);
+    } finally {
+      setIsDetailLoading(false);
+    }
+  };
+
+  const handleGoBack = () => {
+    setSelectedMatch(null);
+  };
+
+  return ( 
     <>
-      {/* CSS movido para cá para evitar o erro de importação */}
       <style>{`
         /* --- TEMA: CYPHER'S EDGE --- */
         .dashboard-overview-container { padding: 2rem; color: #e2e8f0; font-family: 'Inter', sans-serif; }
@@ -225,29 +257,29 @@ const DashboardOverview = () => {
         .nav-tab-button.active { color: #00ffff; font-weight: 600; }
         .nav-tab-button.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background-color: #00ffff; box-shadow: 0 0 8px #00ffff; }
         .graphs-container { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-        @media (min-width: 1024px) {
-          .graphs-container { grid-template-columns: repeat(2, 1fr); }
-          .graphs-container > *:first-child, .graphs-container > *:last-child { grid-column: 1 / -1; }
-        }
+        @media (min-width: 1024px) { .graphs-container { grid-template-columns: repeat(2, 1fr); } .graphs-container > *:first-child, .graphs-container > *:last-child { grid-column: 1 / -1; } }
+        /* Estilos específicos para os gráficos */
         .acs-chart-container, .pie-chart-container, .radar-chart-container { background-color: rgba(30, 41, 59, 0.5); padding: 2rem; border: 1px solid #475569; border-radius: 8px; }
-        .acs-chart-container h3, .pie-chart-container h3, .radar-header h3 { color: #f1f5f9; text-align: center; margin-top: 0; margin-bottom: 1.5rem; font-size: 1.2rem; text-transform: uppercase; }
-        .acs-custom-tooltip, .pie-custom-tooltip { background-color: rgba(15, 25, 35, 0.9); border: 1px solid #00ffff; padding: 10px; border-radius: 4px; color: #e2e8f0; }
-        .acs-custom-tooltip .label, .pie-custom-tooltip .label { font-weight: bold; color: #00ffff; }
+        .acs-chart-container h3, .pie-chart-container h3, .radar-header h3 { color: #f1f5f9; text-align: center; margin-top: 0; margin-bottom: 2rem; font-size: 1.2rem; text-transform: uppercase; }
+        .chart-wrapper { width: 100%; height: auto; }
+        .acs-custom-tooltip { background-color: rgba(15, 25, 35, 0.9); border: 1px solid #00ffff; padding: 10px; border-radius: 4px; color: #e2e8f0; }
+        .acs-custom-tooltip .label { font-weight: bold; color: #00ffff; }
         .recharts-legend-item-text { color: #cbd5e1 !important; }
         .recharts-pie-label-text { fill: #f1f5f9; font-size: 14px; }
         .radar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .radar-header h3 { margin: 0; }
         .player-select { background-color: #1e293b; color: #f1f5f9; border: 1px solid #475569; border-radius: 4px; padding: 0.5rem; font-family: 'Inter', sans-serif; }
       `}</style>
-      <div className="dashboard-overview-container">
-        {isLoading && <div className="loading-message">Carregando histórico...</div>}
-        {!isLoading && (
-          selectedMatch ? (
-            isDetailLoading ? <div className="loading-message">Carregando detalhes da partida...</div> : <MatchDetailView matchData={selectedMatch} onBack={handleGoBack} />
-          ) : (
-            <MatchHistoryView matches={matchHistory} onSelect={handleMatchSelect} />
-          )
-        )}
-      </div>
+      <div className="dashboard-overview-container"> 
+        {isLoading && <div className="loading-message">Carregando histórico...</div>} 
+        {!isLoading && ( 
+          selectedMatch ? ( 
+            isDetailLoading ? <div className="loading-message">Carregando detalhes da partida...</div> : <MatchDetailView matchData={selectedMatch} onBack={handleGoBack} /> 
+          ) : ( 
+            <MatchHistoryView matches={matchHistory} onSelect={handleMatchSelect} /> 
+          ) 
+        )} 
+      </div> 
     </>
   );
 };
