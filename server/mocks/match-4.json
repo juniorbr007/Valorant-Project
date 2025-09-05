@@ -1,8 +1,8 @@
 {
   "matchInfo": {
     "matchId": "match-4",
-    "mapId": "/Game/Maps/Ascent/Ascent",
-    "gameLengthMillis": 2165487,
+    "mapId": "/Game/Maps/Split/Split",
+    "gameLengthMillis": 2394849,
     "gameStartMillis": 1725154800000,
     "provisioningFlowId": "Competitive",
     "isCompleted": true,
@@ -10,254 +10,254 @@
   },
   "players": [
     {
-      "puuid": "puuid-player-0-2708",
+      "puuid": "puuid-Ninja-9790",
+      "gameName": "Ninja",
+      "tagLine": "EUW",
+      "teamId": "Blue",
+      "partyId": "party-4",
+      "characterId": "Omen",
+      "stats": {
+        "kills": 24,
+        "deaths": 19,
+        "assists": 14,
+        "score": 3968,
+        "playtimeMillis": 1803436,
+        "damage": [
+          {
+            "damage": 3096
+          }
+        ],
+        "economy": {
+          "spent": 78857,
+          "loadoutValue": 4891
+        }
+      },
+      "competitiveTier": 17
+    },
+    {
+      "puuid": "puuid-PlayerOne-5412",
       "gameName": "PlayerOne",
       "tagLine": "LAS",
+      "teamId": "Blue",
+      "partyId": "party-1",
+      "characterId": "Killjoy",
+      "stats": {
+        "kills": 23,
+        "deaths": 14,
+        "assists": 15,
+        "score": 4545,
+        "playtimeMillis": 1947002,
+        "damage": [
+          {
+            "damage": 5061
+          }
+        ],
+        "economy": {
+          "spent": 64128,
+          "loadoutValue": 3285
+        }
+      },
+      "competitiveTier": 15
+    },
+    {
+      "puuid": "puuid-Tenz-5947",
+      "gameName": "Tenz",
+      "tagLine": "LAS",
+      "teamId": "Blue",
+      "partyId": "party-3",
+      "characterId": "Cypher",
+      "stats": {
+        "kills": 11,
+        "deaths": 15,
+        "assists": 4,
+        "score": 1525,
+        "playtimeMillis": 2306491,
+        "damage": [
+          {
+            "damage": 2736
+          }
+        ],
+        "economy": {
+          "spent": 90849,
+          "loadoutValue": 3990
+        }
+      },
+      "competitiveTier": 22
+    },
+    {
+      "puuid": "puuid-Shroud-1798",
+      "gameName": "Shroud",
+      "tagLine": "KR1",
       "teamId": "Blue",
       "partyId": "party-5",
       "characterId": "Jett",
       "stats": {
-        "kills": 16,
-        "deaths": 11,
-        "assists": 12,
-        "score": 3362,
-        "playtimeMillis": 2032127,
-        "damage": [
-          {
-            "damage": 4332
-          }
-        ],
-        "economy": {
-          "spent": 62460,
-          "loadoutValue": 3305
-        }
-      },
-      "competitiveTier": 20
-    },
-    {
-      "puuid": "puuid-player-1-7931",
-      "gameName": "Ninja",
-      "tagLine": "NA1",
-      "teamId": "Blue",
-      "partyId": "party-1",
-      "characterId": "Phoenix",
-      "stats": {
-        "kills": 29,
-        "deaths": 12,
-        "assists": 12,
-        "score": 4533,
-        "playtimeMillis": 2041300,
-        "damage": [
-          {
-            "damage": 3864
-          }
-        ],
-        "economy": {
-          "spent": 80885,
-          "loadoutValue": 3784
-        }
-      },
-      "competitiveTier": 25
-    },
-    {
-      "puuid": "puuid-player-2-2700",
-      "gameName": "Shroud",
-      "tagLine": "BR1",
-      "teamId": "Blue",
-      "partyId": "party-4",
-      "characterId": "Sage",
-      "stats": {
-        "kills": 20,
-        "deaths": 21,
+        "kills": 28,
+        "deaths": 19,
         "assists": 7,
-        "score": 3431,
-        "playtimeMillis": 2096682,
+        "score": 4281,
+        "playtimeMillis": 2218565,
         "damage": [
           {
-            "damage": 3980
+            "damage": 2442
           }
         ],
         "economy": {
-          "spent": 62342,
-          "loadoutValue": 3528
-        }
-      },
-      "competitiveTier": 18
-    },
-    {
-      "puuid": "puuid-player-3-5313",
-      "gameName": "Tenz",
-      "tagLine": "EUW",
-      "teamId": "Blue",
-      "partyId": "party-4",
-      "characterId": "Sova",
-      "stats": {
-        "kills": 13,
-        "deaths": 11,
-        "assists": 2,
-        "score": 1734,
-        "playtimeMillis": 2152464,
-        "damage": [
-          {
-            "damage": 3625
-          }
-        ],
-        "economy": {
-          "spent": 74394,
-          "loadoutValue": 4192
-        }
-      },
-      "competitiveTier": 21
-    },
-    {
-      "puuid": "puuid-player-4-3969",
-      "gameName": "ScreaM",
-      "tagLine": "NA1",
-      "teamId": "Blue",
-      "partyId": "party-2",
-      "characterId": "Brimstone",
-      "stats": {
-        "kills": 18,
-        "deaths": 20,
-        "assists": 14,
-        "score": 3248,
-        "playtimeMillis": 2144261,
-        "damage": [
-          {
-            "damage": 4510
-          }
-        ],
-        "economy": {
-          "spent": 73026,
-          "loadoutValue": 3038
+          "spent": 64849,
+          "loadoutValue": 3453
         }
       },
       "competitiveTier": 23
     },
     {
-      "puuid": "puuid-player-5-6330",
-      "gameName": "Mixwell",
-      "tagLine": "EUW",
-      "teamId": "Red",
-      "partyId": "party-3",
-      "characterId": "Viper",
+      "puuid": "puuid-Hiko-1600",
+      "gameName": "Hiko",
+      "tagLine": "KR1",
+      "teamId": "Blue",
+      "partyId": "party-4",
+      "characterId": "Brimstone",
       "stats": {
-        "kills": 25,
-        "deaths": 12,
-        "assists": 11,
-        "score": 3865,
-        "playtimeMillis": 2137424,
+        "kills": 15,
+        "deaths": 17,
+        "assists": 4,
+        "score": 2629,
+        "playtimeMillis": 2397138,
         "damage": [
           {
-            "damage": 3465
+            "damage": 3640
           }
         ],
         "economy": {
-          "spent": 86211,
-          "loadoutValue": 4385
+          "spent": 99678,
+          "loadoutValue": 4987
         }
       },
       "competitiveTier": 18
     },
     {
-      "puuid": "puuid-player-6-9852",
-      "gameName": "Hiko",
-      "tagLine": "LAS",
-      "teamId": "Red",
-      "partyId": "party-5",
-      "characterId": "Omen",
-      "stats": {
-        "kills": 23,
-        "deaths": 16,
-        "assists": 11,
-        "score": 4009,
-        "playtimeMillis": 2092980,
-        "damage": [
-          {
-            "damage": 4200
-          }
-        ],
-        "economy": {
-          "spent": 81286,
-          "loadoutValue": 3216
-        }
-      },
-      "competitiveTier": 22
-    },
-    {
-      "puuid": "puuid-player-7-4664",
-      "gameName": "Steel",
-      "tagLine": "LAS",
-      "teamId": "Red",
-      "partyId": "party-2",
-      "characterId": "Cypher",
-      "stats": {
-        "kills": 11,
-        "deaths": 22,
-        "assists": 17,
-        "score": 2387,
-        "playtimeMillis": 2091361,
-        "damage": [
-          {
-            "damage": 2898
-          }
-        ],
-        "economy": {
-          "spent": 70163,
-          "loadoutValue": 4544
-        }
-      },
-      "competitiveTier": 22
-    },
-    {
-      "puuid": "puuid-player-8-7933",
+      "puuid": "puuid-Ace-5793",
       "gameName": "Ace",
+      "tagLine": "BR1",
+      "teamId": "Red",
+      "partyId": "party-4",
+      "characterId": "Viper",
+      "stats": {
+        "kills": 14,
+        "deaths": 14,
+        "assists": 14,
+        "score": 3007,
+        "playtimeMillis": 2110884,
+        "damage": [
+          {
+            "damage": 3630
+          }
+        ],
+        "economy": {
+          "spent": 86904,
+          "loadoutValue": 3038
+        }
+      },
+      "competitiveTier": 15
+    },
+    {
+      "puuid": "puuid-Sacy-6224",
+      "gameName": "Sacy",
       "tagLine": "KR1",
       "teamId": "Red",
-      "partyId": "party-5",
-      "characterId": "Reyna",
+      "partyId": "party-1",
+      "characterId": "Sage",
       "stats": {
-        "kills": 7,
-        "deaths": 17,
+        "kills": 10,
+        "deaths": 10,
         "assists": 10,
-        "score": 1157,
-        "playtimeMillis": 2052985,
+        "score": 1803,
+        "playtimeMillis": 2025286,
         "damage": [
           {
-            "damage": 5405
+            "damage": 2646
           }
         ],
         "economy": {
-          "spent": 74965,
-          "loadoutValue": 3286
-        }
-      },
-      "competitiveTier": 16
-    },
-    {
-      "puuid": "puuid-player-9-4510",
-      "gameName": "Sacy",
-      "tagLine": "LAS",
-      "teamId": "Red",
-      "partyId": "party-3",
-      "characterId": "Killjoy",
-      "stats": {
-        "kills": 11,
-        "deaths": 19,
-        "assists": 7,
-        "score": 1878,
-        "playtimeMillis": 2021606,
-        "damage": [
-          {
-            "damage": 2280
-          }
-        ],
-        "economy": {
-          "spent": 78624,
-          "loadoutValue": 3558
+          "spent": 64014,
+          "loadoutValue": 3798
         }
       },
       "competitiveTier": 25
+    },
+    {
+      "puuid": "puuid-Steel-8998",
+      "gameName": "Steel",
+      "tagLine": "KR1",
+      "teamId": "Red",
+      "partyId": "party-3",
+      "characterId": "Phoenix",
+      "stats": {
+        "kills": 19,
+        "deaths": 14,
+        "assists": 15,
+        "score": 3399,
+        "playtimeMillis": 2364573,
+        "damage": [
+          {
+            "damage": 3096
+          }
+        ],
+        "economy": {
+          "spent": 80737,
+          "loadoutValue": 4462
+        }
+      },
+      "competitiveTier": 22
+    },
+    {
+      "puuid": "puuid-ScreaM-5523",
+      "gameName": "ScreaM",
+      "tagLine": "NA1",
+      "teamId": "Red",
+      "partyId": "party-3",
+      "characterId": "Sova",
+      "stats": {
+        "kills": 13,
+        "deaths": 12,
+        "assists": 5,
+        "score": 2444,
+        "playtimeMillis": 2123636,
+        "damage": [
+          {
+            "damage": 4351
+          }
+        ],
+        "economy": {
+          "spent": 65807,
+          "loadoutValue": 4540
+        }
+      },
+      "competitiveTier": 20
+    },
+    {
+      "puuid": "puuid-Mixwell-5361",
+      "gameName": "Mixwell",
+      "tagLine": "EUW",
+      "teamId": "Red",
+      "partyId": "party-3",
+      "characterId": "Reyna",
+      "stats": {
+        "kills": 16,
+        "deaths": 10,
+        "assists": 3,
+        "score": 2463,
+        "playtimeMillis": 2059044,
+        "damage": [
+          {
+            "damage": 2160
+          }
+        ],
+        "economy": {
+          "spent": 85606,
+          "loadoutValue": 3077
+        }
+      },
+      "competitiveTier": 19
     }
   ],
   "teams": [
@@ -265,19 +265,19 @@
       "teamId": "Blue",
       "won": true,
       "roundsWon": 13,
-      "roundsPlayed": 20
+      "roundsPlayed": 19
     },
     {
       "teamId": "Red",
       "won": false,
-      "roundsWon": 7,
-      "roundsPlayed": 20
+      "roundsWon": 6,
+      "roundsPlayed": 19
     }
   ],
   "roundResults": [
     {
       "roundNum": 1,
-      "winningTeam": "Red"
+      "winningTeam": "Blue"
     },
     {
       "roundNum": 2,
@@ -289,7 +289,7 @@
     },
     {
       "roundNum": 4,
-      "winningTeam": "Red"
+      "winningTeam": "Blue"
     },
     {
       "roundNum": 5,
@@ -297,7 +297,7 @@
     },
     {
       "roundNum": 6,
-      "winningTeam": "Blue"
+      "winningTeam": "Red"
     },
     {
       "roundNum": 7,
@@ -313,23 +313,23 @@
     },
     {
       "roundNum": 10,
-      "winningTeam": "Blue"
+      "winningTeam": "Red"
     },
     {
       "roundNum": 11,
-      "winningTeam": "Red"
-    },
-    {
-      "roundNum": 12,
-      "winningTeam": "Red"
-    },
-    {
-      "roundNum": 13,
       "winningTeam": "Blue"
     },
     {
-      "roundNum": 14,
+      "roundNum": 12,
+      "winningTeam": "Blue"
+    },
+    {
+      "roundNum": 13,
       "winningTeam": "Red"
+    },
+    {
+      "roundNum": 14,
+      "winningTeam": "Blue"
     },
     {
       "roundNum": 15,
@@ -337,22 +337,18 @@
     },
     {
       "roundNum": 16,
-      "winningTeam": "Blue"
-    },
-    {
-      "roundNum": 17,
-      "winningTeam": "Blue"
-    },
-    {
-      "roundNum": 18,
       "winningTeam": "Red"
     },
     {
-      "roundNum": 19,
+      "roundNum": 17,
+      "winningTeam": "Red"
+    },
+    {
+      "roundNum": 18,
       "winningTeam": "Blue"
     },
     {
-      "roundNum": 20,
+      "roundNum": 19,
       "winningTeam": "Blue"
     }
   ]
