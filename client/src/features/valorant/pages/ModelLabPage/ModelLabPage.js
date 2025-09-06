@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import './ModelLabPage.css';
-import ModelResultCard from '../../../../ui/ModelResultCard/ModelResultCard'
-import ModelComparisonChart from '../../../../charts/ModelComparisonChart/ModelComparisonChart';
-import PredictionSimulator from '../../../../ui/PredictionSimulator/PredictionSimulator'; 
+
+// --- IMPORTAÇÕES CORRIGIDAS E SIMPLIFICADAS ---
+// Agora todos os componentes necessários vêm da mesma pasta vizinha.
+import ModelResultCard from '../../components/ModelResultCard/ModelResultCard';
+import ModelComparisonChart from '../../components/ModelComparisonChart/ModelComparisonChart';
+import PredictionSimulator from '../../components/PredictionSimulator/PredictionSimulator'; 
 
 const ModelLabPage = () => {
   const [modelResults, setModelResults] = useState([]);
@@ -15,28 +18,33 @@ const ModelLabPage = () => {
     setRunInfo("Executando modelos com validação cruzada, isso pode levar um momento...");
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/run-classifier`);
+      if (!response.ok) {
+        throw new Error(`Erro na API: ${response.statusText}`);
+      }
       const data = await response.json();
 
       if (data.results) {
         setModelResults(data.results);
         setRunInfo(`Validação cruzada (k=${data.cv_folds}) concluída em ${data.dataset_size} partidas.`);
       } else {
-        setRunInfo(data.error || "Ocorreu um erro desconhecido.");
+        setRunInfo(data.error || "Ocorreu um erro desconhecido ao processar os resultados.");
       }
     } catch (err) {
       console.error("Erro ao rodar os modelos:", err);
-      setRunInfo("Falha ao comunicar com o servidor.");
+      setRunInfo("Falha de comunicação com o servidor. Verifique se o backend está rodando.");
     } finally {
       setIsModelRunning(false);
     }
   };
 
   return (
-    // 1. Adicionamos uma <div> principal para envolver as duas seções
-    <div>
+    // Usando React.Fragment (<>) para não adicionar uma <div> extra desnecessária
+    <>
       <section className="model-lab-container">
-        <h2>Laboratório de Modelos Preditivos</h2>
-        <p>Execute e compare modelos usando a Validação Cruzada para avaliar a performance e a consistência de cada classificador. Os resultados são exibidos visualmente para uma análise comparativa clara.</p>
+        <h2 className="page-title">Laboratório de Modelos Preditivos</h2>
+        <p className="page-description">
+          Execute e compare modelos usando a Validação Cruzada para avaliar a performance e a consistência de cada classificador. Os resultados são exibidos visualmente para uma análise comparativa clara.
+        </p>
         
         <button onClick={runModels} disabled={isModelRunning} className="run-model-button">
           {isModelRunning ? 'Processando...' : 'Rodar Validação Cruzada'}
@@ -58,11 +66,9 @@ const ModelLabPage = () => {
         )}
       </section>
 
-      {/* --- 2. ADIÇÃO DA NOVA SEÇÃO DO SIMULADOR --- */}
-      {/* O componente do simulador é adicionado aqui, fora da primeira seção */}
+      {/* Seção do Simulador de Predição */}
       <PredictionSimulator />
-
-    </div>
+    </>
   );
 };
 

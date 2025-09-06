@@ -3,7 +3,7 @@ import './Footer.css';
 
 const Footer = () => {
   // Substitua 'Nome do Seu App' pelo nome que você escolheu
-  const appName = 'Valorant Stats Project'; 
+  const appName = 'Cyphers Edge'; 
 
   return (
     <footer className="app-footer">

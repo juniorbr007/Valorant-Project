@@ -1,0 +1,93 @@
+/* Centraliza o conteúdo e adiciona uma animação de entrada */
+.agents-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: #fafafa;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Estiliza o título principal para combinar com o resto do app */
+.agents-container h1 {
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  color: #00ffff;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+/* O grid responsivo continua o mesmo, está perfeito */
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+/* O link clicável */
+.agent-card-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  outline: none; /* Remove a borda padrão do foco do navegador */
+}
+
+/* Adiciona um anel de foco visível para acessibilidade (quando se navega com Tab) */
+.agent-card-link:focus-visible .agent-card {
+  box-shadow: 0 0 0 3px #0f172a, 0 0 0 5px #00ffff;
+}
+
+/* Card individual do agente com cores do tema */
+.agent-card {
+  background-color: #1e293b; /* Cor de fundo mais escura e azulada */
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  border: 1px solid #475569; /* Borda com cor do tema */
+  transition: all 0.3s ease;
+  height: 100%; /* Garante que todos os cards tenham a mesma altura */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Efeito de hover aprimorado com cores do tema */
+.agent-card:hover {
+  transform: translateY(-5px);
+  border-color: #00ffff;
+  box-shadow: 0 8px 25px rgba(0, 255, 255, 0.2);
+}
+
+.agent-icon {
+  width: 100px;
+  height: 100px;
+  object-fit: contain; /* 'contain' é melhor para ícones para não cortar a imagem */
+  margin: 0 auto 1rem auto; /* Centraliza e adiciona margem inferior */
+}
+
+.agent-name {
+  margin-top: 10px;
+  font-family: 'Teko', sans-serif;
+  font-size: 1.5rem;
+  color: #f0f0f0;
+}
+
+/* Mensagens de estado (carregando/erro) */
+.loading-message, .error-message {
+  color: #fff; 
+  text-align: center; 
+  font-size: 1.5rem; 
+  padding: 50px;
+}
+
+/* Animação de entrada usada no container principal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

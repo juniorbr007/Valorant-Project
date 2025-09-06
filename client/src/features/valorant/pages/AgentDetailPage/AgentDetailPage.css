@@ -1,0 +1,102 @@
+/* Seu código CSS vai aqui... */
+.agent-detail-container {
+  display: flex; gap: 40px; padding: 40px; color: #fafafa;
+  max-width: 1400px; margin: 0 auto; align-items: flex-start;
+  font-family: 'Roboto', sans-serif;
+}
+.agent-portrait {
+  flex: 1; max-width: 450px; min-width: 300px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); border-radius: 10px; overflow: hidden;
+}
+.agent-portrait img { width: 100%; height: auto; display: block; }
+.agent-info {
+  flex: 2; text-align: left; background-color: rgba(30, 30, 30, 0.9);
+  border-radius: 10px; padding: 30px; border: 1px solid #444;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+}
+.agent-header {
+  margin-bottom: 20px; border-bottom: 2px solid #fd4556; padding-bottom: 10px;
+}
+.agent-header h1 {
+  font-family: 'Teko', sans-serif; font-size: 4.5rem; color: #fd4556;
+  margin: 0; line-height: 1; letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(253, 69, 86, 0.5);
+}
+.agent-header h3 {
+  font-family: 'Roboto', sans-serif; font-size: 1.6rem; color: #bbb;
+  margin-top: 10px; font-weight: 300;
+}
+.agent-description {
+  font-family: 'Roboto', sans-serif; font-size: 1.15rem; line-height: 1.8;
+  margin: 30px 0; color: #e0e0e0;
+}
+h2 {
+  font-family: 'Teko', sans-serif; font-size: 2.5rem; color: #fd4556;
+  margin-top: 40px; margin-bottom: 20px; border-bottom: 1px solid #666;
+  padding-bottom: 5px; letter-spacing: 1px;
+}
+.agent-abilities {
+  display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;
+}
+.ability-card {
+  background: #1a1a1a; padding: 15px; border-radius: 8px;
+  text-align: center; width: 120px; min-width: 100px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  transition: transform 0.2s ease-in-out; cursor: pointer; border: 1px solid #333;
+}
+.ability-card:hover {
+  transform: translateY(-5px); box-shadow: 0 0 15px rgba(253, 69, 86, 0.4);
+}
+.ability-card img {
+  width: 60px; height: 60px;
+  filter: drop-shadow(0 0 5px rgba(253, 69, 86, 0.5));
+}
+.ability-card p {
+  margin: 10px 0 0; font-family: 'Roboto', sans-serif; font-size: 1.1rem;
+  color: #fafafa; font-weight: bold;
+}
+.agent-info .back-link {
+  display: inline-block; margin-top: 30px; padding: 10px 20px;
+  background-color: #fd4556; color: #fff; text-decoration: none;
+  border-radius: 5px; font-family: 'Teko', sans-serif; font-size: 1.2rem;
+  letter-spacing: 1px; transition: background-color 0.3s ease; cursor: pointer; border: none;
+}
+.agent-info .back-link:hover { background-color: #e03a4b; }
+@media (max-width: 900px) {
+  .agent-detail-container { flex-direction: column; padding: 20px; gap: 20px; }
+  .agent-portrait, .agent-info { max-width: 100%; width: 100%; }
+  .agent-portrait img { max-height: 400px; object-position: top; }
+  .agent-header h1 { font-size: 3.5rem; }
+  .agent-header h3 { font-size: 1.3rem; }
+  h2 { font-size: 2rem; }
+}
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8); display: flex;
+  align-items: center; justify-content: center; z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+.modal-content {
+  background-color: #1a1a1a; padding: 30px; border-radius: 15px;
+  width: 90%; max-width: 600px; border: 1px solid #fd4556;
+  box-shadow: 0 0 30px rgba(253, 69, 86, 0.3); text-align: left;
+}
+.modal-header {
+  display: flex; align-items: center; gap: 20px; margin-bottom: 20px;
+}
+.modal-header img { width: 60px; height: 60px; background: #2c2c2c; border-radius: 8px; }
+.modal-header h2 { margin: 0; font-size: 2rem; font-family: 'Teko', sans-serif; color: #fff; }
+.modal-description {
+  font-family: 'Roboto', sans-serif; font-size: 1rem; line-height: 1.7; color: #ccc;
+}
+.modal-close-button {
+  display: block; margin: 20px 0 0 auto; padding: 10px 20px;
+  border: none; background-color: #fd4556; color: #fff;
+  border-radius: 5px; font-family: 'Teko', sans-serif;
+  font-size: 1.1rem; cursor: pointer; transition: background-color 0.2s ease;
+}
+.modal-close-button:hover { background-color: #b7323f; }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+} 

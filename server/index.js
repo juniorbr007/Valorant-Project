@@ -2,7 +2,7 @@
 
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
+const axios = require('axios'); // Garantimos que o axios está importado
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const { spawn } = require('child_process');
@@ -40,7 +40,10 @@ async function connectDB() {
 app.use(cors());
 app.use(express.json());
 
-// --- ROTAS GERAIS E DE AUTENTICAÇÃO ---
+
+// --- ROTAS DE AUTENTICAÇÃO E MOCKS (Sem alterações) ---
+// ... (Suas rotas de /auth/riot, /api/match-history, etc. continuam aqui, sem nenhuma mudança)
+// (Para economizar espaço, não vou repetir todas elas, apenas a que foi corrigida)
 
 app.get('/', (req, res) => {
     res.send('Servidor rodando com MongoDB!');
@@ -70,8 +73,6 @@ app.get('/auth/riot/callback', async (req, res) => {
     res.send("Modo real ativado, mas ainda não implementado.");
   }
 });
-
-// --- ROTAS PARA DADOS FICTÍCIOS (MOCKS) ---
 
 app.get('/api/match-history', (req, res) => {
   try {
@@ -128,29 +129,30 @@ app.get('/api/run-clustering', (req, res) => {
   });
 });
 
+// --- AJUSTE PRINCIPAL AQUI ---
+// ROTA SIMPLIFICADA E CORRIGIDA para buscar os agentes.
 app.get('/api/content', async (req, res) => {
   try {
-    console.log("-> Rota /api/content acionada!");
-    const apiKey = process.env.RIOT_API_KEY;
-    if (!apiKey) throw new Error("A chave da API da Riot não foi configurada no .env");
-    const riotApiUrl = `https://br.api.riotgames.com/val/content/v1/contents?locale=pt-BR`;
+    console.log("-> Rota /api/content acionada! (Versão Simplificada)");
+    
+    // Usamos apenas a API pública, que não precisa de chave.
     const communityApiUrl = `https://valorant-api.com/v1/agents?language=pt-BR&isPlayableCharacter=true`;
-    const [riotResponse, communityResponse] = await Promise.all([
-      axios.get(riotApiUrl, { headers: { "X-Riot-Token": apiKey } }),
-      axios.get(communityApiUrl)
-    ]);
-    const riotCharacters = riotResponse.data.characters;
-    const communityAgentsData = communityResponse.data.data;
-    const playableAgentNames = riotCharacters
-      .filter(character => character.name !== "Null UI Data!")
-      .map(agent => agent.name.toLowerCase());
-    const finalAgentList = communityAgentsData
-      .filter(agent => playableAgentNames.includes(agent.displayName.toLowerCase()))
-      .map(agent => ({ id: agent.uuid, name: agent.displayName, displayIcon: agent.displayIcon }));
-    console.log(`-> ${finalAgentList.length} agentes enriquecidos com ícones encontrados.`);
+    
+    const response = await axios.get(communityApiUrl);
+    
+    // Mapeamos os dados diretamente, pois a API já filtra os agentes jogáveis.
+    const finalAgentList = response.data.data.map(agent => ({ 
+      id: agent.uuid, 
+      name: agent.displayName, 
+      displayIcon: agent.displayIcon 
+    }));
+
+    console.log(`-> ${finalAgentList.length} agentes encontrados.`);
     res.status(200).json(finalAgentList);
+
   } catch (error) {
-    console.error("-> ERRO ao buscar conteúdo enriquecido:", error.response ? error.response.data : error.message);
+    // Se a API pública falhar, o erro será registrado aqui.
+    console.error("-> ERRO ao buscar dados da valorant-api.com:", error.message);
     res.status(500).json({ message: "Erro ao buscar dados dos agentes." });
   }
 });
@@ -158,7 +160,11 @@ app.get('/api/content', async (req, res) => {
 app.get('/api/seed-database', async (req, res) => {
   try {
     console.log("-> Semeando o banco de dados com dados fictícios...");
-    const { mockMatches } = require('../client/src/shared/mockMatchData');
+    // ATENÇÃO: O caminho para mockMatchData pode precisar de ajuste dependendo de onde você roda o script
+    const mockDataPath = path.join(__dirname, '..', 'client', 'src', 'shared', 'mockMatchData.js');
+    // Como mockMatchData é um módulo JS, precisamos usar require de uma forma diferente
+    const { mockMatches } = require(mockDataPath); 
+
     const matchesCollection = db.collection('matches');
     await matchesCollection.deleteMany({});
     const result = await matchesCollection.insertMany(mockMatches);

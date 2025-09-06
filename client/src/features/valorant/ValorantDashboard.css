@@ -1,0 +1,63 @@
+.valorant-dashboard-container {
+  padding: 1rem 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Estilo para a barra de navegação das abas */
+.dashboard-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; 
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #475569;
+}
+
+/* Estilo padrão dos botões das abas */
+.dashboard-nav button {
+  background-color: transparent;
+  border: 1px solid #475569;
+  color: #cbd5e1;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+/* Efeito ao passar o mouse */
+.dashboard-nav button:hover {
+  background-color: rgba(0, 255, 255, 0.1);
+  border-color: #00ffff;
+  color: #ffffff;
+}
+
+/* Estilo do botão da aba ATIVA */
+.dashboard-nav button.active {
+  background-color: #00ffff;
+  color: #0f172a; /* Cor do fundo da página, para contraste */
+  border-color: #00ffff;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.dashboard-content {
+  /* O conteúdo de cada aba será estilizado em seu próprio arquivo CSS */
+}
+
+/* Animação de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
