@@ -1,0 +1,162 @@
+.match-detail-container {
+  background-color: #1e293b;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #475569;
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.match-header {
+  text-align: center;
+  border-bottom: 1px solid #475569;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+.match-header h2 { margin: 0; }
+.match-info { display: flex; justify-content: center; gap: 1rem; margin-top: 0.5rem; color: #94a3b8; }
+
+.scoreboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.team-header {
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.blue-team .team-header { border-bottom: 2px solid #3b82f6; }
+.red-team .team-header { border-bottom: 2px solid #ef4444; }
+.blue-team h3 { color: #3b82f6; margin: 0; }
+.red-team h3 { color: #ef4444; margin: 0; }
+
+.player-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 0.5fr;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  background-color: #0f172a;
+  margin-bottom: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.player-row.main-player {
+  background-color: #334155; /* Destaque para o jogador principal */
+  border: 1px solid #00ffff;
+}
+
+.player-info { display: flex; align-items: center; gap: 10px; }
+.champion-icon { width: 32px; height: 32px; border-radius: 50%; }
+.summoner-name { font-weight: 500; font-size: 0.9rem; }
+
+.player-kda { font-weight: bold; }
+.player-cs { color: #94a3b8; font-size: 0.8rem; }
+
+.player-items { display: flex; gap: 4px; }
+.player-items img { width: 28px; height: 28px; background-color: #0f172a; border-radius: 4px; }
+.item-slot { width: 28px; height: 28px; background-color: rgba(0,0,0,0.2); border-radius: 4px; }
+
+/* --- NOVOS ESTILOS PARA A TELA DE DEV --- */
+
+/* Posição do header precisa ser relativa para o botão absoluto funcionar */
+.match-header {
+  position: relative; 
+}
+
+/* Botão pequeno no canto */
+.dev-screen-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #475569;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.dev-screen-button:hover {
+  background-color: #334155;
+  color: #00ffff;
+  border-color: #00ffff;
+  transform: scale(1.1);
+}
+
+/* Fundo preto semi-transparente que cobre a tela toda */
+.dev-screen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease;
+}
+
+/* A janela do "terminal" */
+.dev-screen-content {
+  background-color: #0f172a;
+  border: 1px solid #33ff99; /* Cor de terminal verde */
+  box-shadow: 0 0 30px rgba(51, 255, 153, 0.2);
+  width: 90%;
+  max-width: 800px;
+  height: 80vh;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  animation: slideInUp 0.4s ease-out;
+}
+
+.dev-screen-header {
+  background-color: #1e293b;
+  padding: 10px 15px;
+  color: #33ff99;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #33ff99;
+}
+
+.dev-screen-header button {
+  background: none;
+  border: none;
+  color: #33ff99;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Onde o JSON é exibido */
+.dev-screen-content pre {
+  padding: 1rem;
+  margin: 0;
+  color: #a7f3d0;
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  overflow: auto; /* Adiciona scroll se o JSON for muito grande */
+  flex-grow: 1; /* Faz com que o <pre> ocupe todo o espaço restante */
+}
+
+/* Animação de entrada do modal */
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

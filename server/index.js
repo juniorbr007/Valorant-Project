@@ -256,6 +256,92 @@ app.get('/api/lol/player/:gameName/:tagLine', async (req, res) => {
   }
 });
 
+
+// --- ROTA PARA BUSCAR HISTÓRICO DE PARTIDAS DO LOL (AGORA COM DETALHES) ---
+app.get('/api/lol/matches/:puuid', async (req, res) => {
+  const { puuid } = req.params;
+  const apiKey = process.env.RIOT_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ message: "A chave da API da Riot não está configurada no servidor." });
+  }
+
+  const matchIdsUrl = `https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids`;
+
+  try {
+    console.log(`Buscando lista de IDs de partidas para o PUUID: ${puuid}`);
+    const matchIdsResponse = await axios.get(matchIdsUrl, { headers: { "X-Riot-Token": apiKey } });
+    const matchIds = matchIdsResponse.data;
+
+    console.log(`Encontrados ${matchIds.length} IDs. Buscando detalhes de cada partida...`);
+
+    // Usamos Promise.all para buscar os detalhes de todas as partidas em paralelo (muito mais rápido!)
+    const matchDetailsPromises = matchIds.map(matchId => {
+      const matchDetailsUrl = `https://americas.api.riotgames.com/lol/match/v5/matches/${matchId}`;
+      return axios.get(matchDetailsUrl, { headers: { "X-Riot-Token": apiKey } });
+    });
+
+    const matchDetailsResponses = await Promise.all(matchDetailsPromises);
+
+    // Agora, extraímos apenas os dados que o frontend precisa
+    const enrichedMatchHistory = matchDetailsResponses.map(response => {
+      const matchData = response.data.info;
+      // Encontra os dados do jogador principal nesta partida
+      const playerParticipant = matchData.participants.find(p => p.puuid === puuid);
+
+      return {
+        matchId: response.data.metadata.matchId,
+        gameMode: matchData.gameMode,
+        win: playerParticipant.win,
+        championName: playerParticipant.championName,
+        kills: playerParticipant.kills,
+        deaths: playerParticipant.deaths,
+        assists: playerParticipant.assists,
+      };
+    });
+
+    console.log("Histórico de partidas enriquecido e pronto para enviar.");
+    res.json(enrichedMatchHistory);
+
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const message = error.response?.data?.status?.message || "Erro ao buscar histórico de partidas.";
+    console.error(`ERRO ${status}:`, message);
+    res.status(status).json({ message });
+  }
+});
+
+
+// --- ROTA PARA BUSCAR DETALHES DE UMA PARTIDA ESPECÍFICA DO LOL ---
+app.get('/api/lol/match/:matchId', async (req, res) => {
+  const { matchId } = req.params;
+  const apiKey = process.env.RIOT_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ message: "A chave da API da Riot não está configurada no servidor." });
+  }
+
+  const matchDetailsUrl = `https://americas.api.riotgames.com/lol/match/v5/matches/${matchId}`;
+
+  try {
+    console.log(`Buscando detalhes da partida: ${matchId}`);
+    
+    const response = await axios.get(matchDetailsUrl, {
+      headers: { "X-Riot-Token": apiKey }
+    });
+
+    console.log("Detalhes da partida encontrados com sucesso.");
+    // A API retorna um objeto JSON gigante com todos os detalhes
+    res.json(response.data);
+
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const message = error.response?.data?.status?.message || "Erro ao buscar detalhes da partida.";
+    console.error(`ERRO ${status}:`, message);
+    res.status(status).json({ message });
+  }
+});
+
 // --- INICIALIZAÇÃO DO SERVIDOR ---
 connectDB().then(() => {
   app.listen(PORT, () => {
