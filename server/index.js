@@ -342,6 +342,46 @@ app.get('/api/lol/match/:matchId', async (req, res) => {
   }
 });
 
+
+// --- ROTA PARA SALVAR DADOS BRUTOS DE UMA PARTIDA DO LOL ---
+app.post('/api/lol/save-match', async (req, res) => {
+  try {
+    // Os dados da partida virão no corpo (body) da requisição
+    const matchData = req.body;
+
+    if (!matchData?.metadata?.matchId) {
+      return res.status(400).json({ message: "Dados da partida inválidos ou ausentes." });
+    }
+
+    const matchId = matchData.metadata.matchId;
+    const collection = db.collection("lol_raw_matches");
+
+    console.log(`Recebido pedido para salvar a partida: ${matchId}`);
+
+    // Usamos updateOne com upsert: true.
+    // Isso significa: encontre um documento com este matchId e atualize-o.
+    // Se não encontrar, insira-o como um novo documento.
+    // Isso evita duplicatas de forma muito eficiente.
+    const result = await collection.updateOne(
+      { "metadata.matchId": matchId }, // O critério de busca
+      { $set: matchData },             // Os dados a serem inseridos/atualizados
+      { upsert: true }                  // A opção mágica
+    );
+
+    if (result.upsertedCount > 0) {
+      console.log(`-> Partida ${matchId} inserida com sucesso!`);
+      res.status(201).json({ message: `Partida ${matchId} salva com sucesso!` });
+    } else {
+      console.log(`-> Partida ${matchId} já existia e foi atualizada.`);
+      res.status(200).json({ message: `Partida ${matchId} atualizada.` });
+    }
+
+  } catch (error) {
+    console.error("ERRO ao salvar a partida no MongoDB:", error);
+    res.status(500).json({ message: "Erro interno ao salvar a partida." });
+  }
+});
+
 // --- INICIALIZAÇÃO DO SERVIDOR ---
 connectDB().then(() => {
   app.listen(PORT, () => {

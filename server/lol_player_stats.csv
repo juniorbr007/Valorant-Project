@@ -1,0 +1,11 @@
+win,championName,kills,deaths,assists,goldEarned,totalMinionsKilled,visionScore,wardsPlaced,totalDamageDealtToChampions,turretTakedowns
+0,Caitlyn,13,14,28,15868,62,0,0,50701,2
+0,Sejuani,18,18,33,18638,39,0,0,58405,0
+0,KSante,16,15,32,18205,81,0,0,52312,2
+0,Mordekaiser,13,18,29,16656,75,0,0,46446,1
+0,Ashe,6,16,31,14178,32,6,0,26878,1
+1,Galio,9,15,53,15466,26,0,0,47701,3
+1,Varus,37,14,26,20898,77,0,0,107939,4
+1,Vex,26,13,37,19361,78,0,0,84224,2
+1,Maokai,8,15,46,15620,40,0,0,36784,2
+1,Ivern,1,9,65,14825,21,0,0,25225,4
