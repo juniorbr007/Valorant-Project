@@ -3,8 +3,8 @@ import './ModelLabPage.css';
 
 // --- IMPORTAÇÕES CORRIGIDAS E SIMPLIFICADAS ---
 // Agora todos os componentes necessários vêm da mesma pasta vizinha.
-import ModelResultCard from '../../components/ModelResultCard/ModelResultCard';
-import ModelComparisonChart from '../../components/ModelComparisonChart/ModelComparisonChart';
+import ModelResultCard from '../../../../shared/ModelResultCard/ModelResultCard';
+import ModelComparisonChart from '../../../../shared/ModelComparisonChart/ModelComparisonChart';
 import PredictionSimulator from '../../components/PredictionSimulator/PredictionSimulator'; 
 
 const ModelLabPage = () => {
