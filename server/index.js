@@ -223,6 +223,38 @@ app.post('/api/predict', (req, res) => {
   });
 });
 
+// --- ROTA PARA BUSCAR DADOS DE JOGADOR DO LOL ---
+app.get('/api/lol/player/:gameName/:tagLine', async (req, res) => {
+  const { gameName, tagLine } = req.params;
+  const apiKey = process.env.RIOT_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ message: "A chave da API da Riot não está configurada no servidor." });
+  }
+
+  // URL para buscar dados da conta pelo Riot ID. A região 'americas' serve para o BR.
+  const accountUrl = `https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`;
+
+  try {
+    console.log(`Buscando dados do LoL para: ${gameName}#${tagLine}`);
+    
+    // Fazemos a chamada usando o axios e passamos a chave no header, que é a forma correta.
+    const response = await axios.get(accountUrl, {
+      headers: {
+        "X-Riot-Token": apiKey
+      }
+    });
+
+    console.log("Dados da conta encontrados:", response.data);
+    res.json(response.data);
+
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const message = error.response?.data?.status?.message || "Erro ao se comunicar com a API da Riot.";
+    console.error(`ERRO ${status}:`, message);
+    res.status(status).json({ message });
+  }
+});
 
 // --- INICIALIZAÇÃO DO SERVIDOR ---
 connectDB().then(() => {

@@ -1,37 +1,48 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import './App.css';
 
-// --- IMPORTAÇÕES ---
-// Importamos todos os componentes de página que o App vai controlar.
+// --- IMPORTAÇÕES DE MÓDULOS E COMPONENTES ---
+// Agrupamos todas as importações para melhor organização.
+
+// Layouts Globais
 import Navbar from './components/layouts/Navbar/Navbar';
 import Footer from './components/layouts/Footer/Footer';
+
+// Features Principais
 import GameSelectionScreen from './features/GameSelection/GameSelectionScreen'; 
 import ValorantDashboard from './features/valorant/ValorantDashboard';
+import LolDashboard from './features/lol/LolDashboard'; // Importa o dashboard real do LoL
+
+// Páginas Específicas (sub-rotas)
 import AgentsPage from './features/valorant/pages/AgentsPage/AgentsPage';
 import AgentDetailPage from './features/valorant/pages/AgentDetailPage/AgentDetailPage';
 
-import './App.css';
 
-// --- PLACEHOLDER ---
-const LolDashboard = () => <div className="placeholder-container"><h2>Dashboard do League of Legends</h2><p>Em breve...</p></div>;
-
-
-// --- COMPONENTE PRINCIPAL APP ---
+/**
+ * Componente principal que orquestra toda a navegação e renderização de alto nível da aplicação.
+ * @returns {JSX.Element} O componente App renderizado.
+ */
 function App() {
-  // 'currentView' controla qual tela principal está visível.
+  // Estado que controla qual tela principal está visível. Inicia na tela de seleção.
   const [currentView, setCurrentView] = useState('selection');
   
-  // 'selectedAgentId' guarda o ID do agente clicado.
+  // Estado que armazena o ID do agente selecionado para ser passado para a página de detalhes.
   const [selectedAgentId, setSelectedAgentId] = useState(null);
 
-  // --- FUNÇÕES DE CONTROLE ---
+  // --- FUNÇÕES DE CONTROLE DE NAVEGAÇÃO ---
 
-  // Passada para a Navbar para mudar a view (ex: ir para 'agents').
+  /**
+   * Navega para uma view principal. Usado pela Navbar.
+   * @param {string} view - O identificador da view para a qual navegar (ex: 'agents', 'selection').
+   */
   const handleNavigate = (view) => {
     setCurrentView(view);
   };
 
-  // Passada para a GameSelectionScreen.
+  /**
+   * Navega para o dashboard de um jogo específico. Usado pela GameSelectionScreen.
+   * @param {'valorant' | 'lol'} game - O jogo selecionado.
+   */
   const handleSelectGame = (game) => {
     if (game === 'valorant') {
       setCurrentView('valorantDashboard');
@@ -40,13 +51,19 @@ function App() {
     }
   };
   
-  // Passada para a AgentsPage. É chamada quando um agente é clicado.
+  /**
+   * Seleciona um agente e navega para a página de detalhes. Usado pela AgentsPage.
+   * @param {string} agentId - O UUID do agente selecionado.
+   */
   const handleSelectAgent = (agentId) => {
-    setSelectedAgentId(agentId); // 1. Guarda o ID
-    setCurrentView('agentDetail'); // 2. Muda a tela para a de detalhes
+    setSelectedAgentId(agentId); // 1. Armazena o ID
+    setCurrentView('agentDetail'); // 2. Muda a view para a de detalhes
   };
 
-  // --- LÓGICA DE RENDERIZAÇÃO ---
+  /**
+   * Decide qual componente renderizar com base no estado 'currentView'.
+   * @returns {JSX.Element} O componente de página a ser renderizado.
+   */
   const renderContent = () => {
     switch (currentView) {
       case 'selection':
@@ -54,13 +71,12 @@ function App() {
       case 'valorantDashboard':
         return <ValorantDashboard />;
       case 'lolDashboard':
-        return <LolDashboard />;
+        // Agora usa o componente real importado.
+        return <LolDashboard />; 
       case 'agents':
-        // Passa a função 'handleSelectAgent' para a AgentsPage
         return <AgentsPage onSelectAgent={handleSelectAgent} />;
       case 'agentDetail':
-        // Passa o ID guardado para a AgentDetailPage
-         return <AgentDetailPage agentId={selectedAgentId} onBack={() => handleNavigate('agents')} />;
+        return <AgentDetailPage agentId={selectedAgentId} onBack={() => handleNavigate('agents')} />;
       default:
         return <GameSelectionScreen onSelectGame={handleSelectGame} />;
     }
@@ -72,10 +88,9 @@ function App() {
       <main className="content-wrapper">
         {renderContent()}
       </main>
-       <Footer />
+      <Footer />
     </div>
   );
 }
 
 export default App;
-
