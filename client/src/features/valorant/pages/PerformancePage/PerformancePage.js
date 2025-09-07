@@ -7,6 +7,7 @@ import AgentPerformanceChart from '../../components/AgentPerformanceChart/AgentP
 import DistributionChart from '../../components/DistributionChart/DistributionChart';
 import PerformanceChart from '../../components/PerformanceChart/PerformanceChart';
 import ScatterPlotChart from '../../components/ScatterPlotChart/ScatterPlotChart';
+
 import RolePerformanceChart from '../../components/RolePerformanceChart/RolePerformanceChart';
 import ClusterPieChart from '../../components/ClusterPieChart/ClusterPieChart';
 
