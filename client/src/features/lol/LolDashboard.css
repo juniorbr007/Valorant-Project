@@ -93,3 +93,27 @@
 /* --- Animações --- */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+/* --- ADICIONE ESTES ESTILOS AO SEU CSS --- */
+
+.save-all-button {
+  background-color: transparent;
+  color: #00ffff;
+  border: 1px solid #00ffff;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-all-button:hover:not(:disabled) {
+  background-color: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.save-all-button:disabled {
+  border-color: #475569;
+  color: #475569;
+  cursor: not-allowed;
+}

@@ -38,7 +38,7 @@ async function connectDB() {
 
 // Middlewares
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 
 // --- ROTAS DE AUTENTICAÇÃO E MOCKS (Sem alterações) ---
@@ -257,61 +257,76 @@ app.get('/api/lol/player/:gameName/:tagLine', async (req, res) => {
 });
 
 
-// --- ROTA PARA BUSCAR HISTÓRICO DE PARTIDAS DO LOL (AGORA COM DETALHES) ---
+// --- ROTA DE HISTÓRICO DE PARTIDAS COM CACHE E FILA ORGANIZADA ---
 app.get('/api/lol/matches/:puuid', async (req, res) => {
   const { puuid } = req.params;
   const apiKey = process.env.RIOT_API_KEY;
-
-  if (!apiKey) {
-    return res.status(500).json({ message: "A chave da API da Riot não está configurada no servidor." });
-  }
+  if (!apiKey) return res.status(500).json({ message: "Chave da API não configurada." });
 
   const matchIdsUrl = `https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids`;
+  const matchesCollection = db.collection("lol_raw_matches");
 
   try {
-    console.log(`Buscando lista de IDs de partidas para o PUUID: ${puuid}`);
     const matchIdsResponse = await axios.get(matchIdsUrl, { headers: { "X-Riot-Token": apiKey } });
     const matchIds = matchIdsResponse.data;
+    console.log(`Riot retornou ${matchIds.length} IDs de partida recentes.`);
 
-    console.log(`Encontrados ${matchIds.length} IDs. Buscando detalhes de cada partida...`);
+    const cachedMatches = await matchesCollection.find({ "metadata.matchId": { $in: matchIds } }).toArray();
+    const cachedMatchIds = cachedMatches.map(match => match.metadata.matchId);
+    console.log(`Encontradas ${cachedMatches.length} partidas no cache.`);
 
-    // Usamos Promise.all para buscar os detalhes de todas as partidas em paralelo (muito mais rápido!)
-    const matchDetailsPromises = matchIds.map(matchId => {
-      const matchDetailsUrl = `https://americas.api.riotgames.com/lol/match/v5/matches/${matchId}`;
-      return axios.get(matchDetailsUrl, { headers: { "X-Riot-Token": apiKey } });
-    });
+    const missingMatchIds = matchIds.filter(id => !cachedMatchIds.includes(id));
+    console.log(`Precisamos buscar ${missingMatchIds.length} novas partidas da API.`);
 
-    const matchDetailsResponses = await Promise.all(matchDetailsPromises);
+    let newMatchesDetails = [];
+    
+    // --- LÓGICA DE FILA ORGANIZADA ---
+    // Em vez de Promise.all, usamos um loop for...of que respeita o 'await'.
+    if (missingMatchIds.length > 0) {
+      console.log('Iniciando busca em fila para evitar Rate Limit...');
+      for (const matchId of missingMatchIds) {
+        const matchDetailsUrl = `https://americas.api.riotgames.com/lol/match/v5/matches/${matchId}`;
+        try {
+          const response = await axios.get(matchDetailsUrl, { headers: { "X-Riot-Token": apiKey } });
+          newMatchesDetails.push(response.data);
+          // Pequena pausa de 50ms entre as requisições para garantir
+          await new Promise(resolve => setTimeout(resolve, 50)); 
+        } catch (loopError) {
+          // Se uma única partida falhar, registramos o erro mas não quebramos o loop
+          console.error(`Falha ao buscar detalhes para a partida ${matchId}:`, loopError.message);
+        }
+      }
+      console.log('Busca em fila concluída.');
+    }
 
-    // Agora, extraímos apenas os dados que o frontend precisa
-    const enrichedMatchHistory = matchDetailsResponses.map(response => {
-      const matchData = response.data.info;
-      // Encontra os dados do jogador principal nesta partida
-      const playerParticipant = matchData.participants.find(p => p.puuid === puuid);
+    const allMatchDetails = [...cachedMatches, ...newMatchesDetails];
 
+    const enrichedMatchHistory = allMatchDetails.map(matchData => {
+      if (!matchData?.info?.participants) return null;
+      const p = matchData.info.participants.find(p => p.puuid === puuid);
+      if (!p) return null;
       return {
-        matchId: response.data.metadata.matchId,
-        gameMode: matchData.gameMode,
-        win: playerParticipant.win,
-        championName: playerParticipant.championName,
-        kills: playerParticipant.kills,
-        deaths: playerParticipant.deaths,
-        assists: playerParticipant.assists,
+        matchId: matchData.metadata.matchId,
+        gameMode: matchData.info.gameMode,
+        win: p.win, championName: p.championName,
+        kills: p.kills, deaths: p.deaths, assists: p.assists,
       };
-    });
+    }).filter(Boolean);
+
+    const finalSortedList = matchIds
+      .map(id => enrichedMatchHistory.find(match => match.matchId === id))
+      .filter(Boolean);
 
     console.log("Histórico de partidas enriquecido e pronto para enviar.");
-    res.json(enrichedMatchHistory);
+    res.json(finalSortedList);
 
   } catch (error) {
     const status = error.response?.status || 500;
     const message = error.response?.data?.status?.message || "Erro ao buscar histórico de partidas.";
-    console.error(`ERRO ${status}:`, message);
+    console.error(`ERRO ${status} na rota /api/lol/matches:`, message);
     res.status(status).json({ message });
   }
 });
-
-
 // --- ROTA PARA BUSCAR DETALHES DE UMA PARTIDA ESPECÍFICA DO LOL ---
 app.get('/api/lol/match/:matchId', async (req, res) => {
   const { matchId } = req.params;
@@ -379,6 +394,106 @@ app.post('/api/lol/save-match', async (req, res) => {
   } catch (error) {
     console.error("ERRO ao salvar a partida no MongoDB:", error);
     res.status(500).json({ message: "Erro interno ao salvar a partida." });
+  }
+});
+
+
+// --- ROTA PARA SALVAR MÚLTIPLAS PARTIDAS DE UMA VEZ ---
+app.post('/api/lol/save-matches', async (req, res) => {
+  try {
+    // Esperamos receber um array de partidas no corpo da requisição
+    const matches = req.body;
+    if (!Array.isArray(matches) || matches.length === 0) {
+      return res.status(400).json({ message: "Nenhum dado de partida fornecido." });
+    }
+
+    const collection = db.collection("lol_raw_matches");
+    console.log(`Recebido pedido para salvar ${matches.length} partidas.`);
+
+    // Criamos uma lista de operações 'updateOne' para executar de uma vez
+    const operations = matches.map(matchData => ({
+      updateOne: {
+        filter: { "metadata.matchId": matchData.metadata.matchId },
+        update: { $set: matchData },
+        upsert: true,
+      },
+    }));
+
+    // Executamos todas as operações em lote (muito mais eficiente)
+    const result = await collection.bulkWrite(operations);
+
+    console.log(`-> ${result.upsertedCount} novas partidas inseridas, ${result.modifiedCount} atualizadas.`);
+    res.status(200).json({ 
+      message: "Operação concluída!",
+      inserted: result.upsertedCount,
+      updated: result.modifiedCount
+    });
+
+  } catch (error) {
+    console.error("ERRO ao salvar partidas em lote:", error);
+    res.status(500).json({ message: "Erro interno ao salvar partidas." });
+  }
+});
+
+
+// --- ROTA PARA EXECUTAR O CLASSIFICADOR COM DADOS DO LOL ---
+app.get('/api/lol/run-classifier', (req, res) => {
+  console.log("-> Acionando o script de classificação do LoL em Python...");
+  
+  // Executa o nosso NOVO script
+  const pythonProcess = spawn('python', ['lol_classifier_model.py']);
+  
+  let resultData = '';
+  // Captura a saída (o JSON com os resultados)
+  pythonProcess.stdout.on('data', (data) => resultData += data.toString());
+  // Captura erros, se houver
+  pythonProcess.stderr.on('data', (data) => console.error(`[LoL Classifier ERROR]: ${data}`));
+  
+  pythonProcess.on('close', (code) => {
+    if (code === 0) {
+      console.log("-> Script de classificação do LoL finalizado com sucesso.");
+      try {
+        // Envia o JSON capturado de volta para o frontend
+        res.status(200).json(JSON.parse(resultData));
+      } catch (e) {
+        res.status(500).send("Erro ao parsear o resultado do script Python.");
+      }
+    } else {
+      console.log(`-> Script de classificação do LoL finalizado com erro, código: ${code}`);
+      res.status(500).send("Ocorreu um erro durante o processo de classificação.");
+    }
+  });
+});
+
+// --- ROTA PARA SERVIR OS DADOS DE TREINAMENTO (CSV) COMO JSON ---
+app.get('/api/lol/training-data', (req, res) => {
+  const csvPath = path.join(__dirname, 'lol_player_stats.csv');
+  try {
+    if (!fs.existsSync(csvPath)) {
+      return res.status(404).json({ message: "Arquivo CSV não encontrado. Rode o data_miner.py primeiro." });
+    }
+
+    // Leitura e parse simples do CSV para JSON
+    const fileContent = fs.readFileSync(csvPath, 'utf-8');
+    const rows = fileContent.split('\n').filter(Boolean); // Divide por linha e remove linhas vazias
+    const headers = rows.shift().split(','); // Pega o cabeçalho
+    
+    const jsonData = rows.map(row => {
+      const values = row.split(',');
+      const entry = {};
+      headers.forEach((header, index) => {
+        // Converte para número se for possível, senão mantém como string
+        entry[header] = isNaN(values[index]) ? values[index] : Number(values[index]);
+      });
+      return entry;
+    });
+
+    console.log(`-> Enviando ${jsonData.length} linhas de dados de treinamento.`);
+    res.status(200).json(jsonData);
+
+  } catch (error) {
+    console.error("ERRO ao ler o arquivo CSV:", error);
+    res.status(500).json({ message: "Erro interno ao processar os dados de treinamento." });
   }
 });
 
