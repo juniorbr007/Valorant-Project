@@ -1,10 +1,11 @@
 .lol-dashboard-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 2rem;
   animation: fadeIn 0.5s ease-in-out;
 }
 
+/* --- Container de Busca --- */
 .search-container {
   background-color: #1e293b;
   padding: 2rem;
@@ -12,90 +13,83 @@
   border: 1px solid #475569;
   text-align: center;
 }
+.search-container h2 { margin-top: 0; font-size: 2rem; color: #00ffff; }
+.input-group { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 1.5rem 0; }
+.input-group input { background-color: #0f172a; border: 1px solid #475569; color: #f0f0f0; padding: 0.75rem; border-radius: 6px; font-size: 1rem; text-align: right; width: 100%; }
+.input-group input:focus { outline: none; border-color: #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
+.input-group span { font-size: 1.5rem; color: #475569; }
+.tagline-input { text-align: left !important; max-width: 80px; }
+.search-container button { background-color: #00ffff; color: #0f172a; border: none; padding: 0.8rem 2rem; font-size: 1.1rem; font-weight: bold; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+.search-container button:hover:not(:disabled) { background-color: #ffffff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); }
+.search-container button:disabled { background-color: #475569; cursor: not-allowed; }
 
-.search-container h2 {
-  margin-top: 0;
-  font-size: 2rem;
-  color: #00ffff;
-}
+/* --- Mensagens de Feedback --- */
+.error-message { color: #f87171; text-align: center; margin-top: 1rem; font-weight: bold; }
+.loading-message { text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #94a3b8; }
 
-.input-group {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin: 1.5rem 0;
-}
-
-.input-group input {
-  background-color: #0f172a;
-  border: 1px solid #475569;
-  color: #f0f0f0;
-  padding: 0.75rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  text-align: right;
-  width: 100%;
-}
-
-.input-group input:focus {
-  outline: none;
-  border-color: #00ffff;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-}
-
-.input-group span {
-  font-size: 1.5rem;
-  color: #475569;
-}
-
-.tagline-input {
-  text-align: left !important;
-  max-width: 80px;
-}
-
-.search-container button {
-  background-color: #00ffff;
-  color: #0f172a;
-  border: none;
-  padding: 0.8rem 2rem;
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.search-container button:hover:not(:disabled) {
-  background-color: #ffffff;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-}
-
-.search-container button:disabled {
-  background-color: #475569;
-  cursor: not-allowed;
-}
-
-.error-message {
-  color: #f87171;
-  text-align: center;
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-.results-container {
+/* --- Layout Principal dos Resultados --- */
+.player-data-container {
+  display: grid;
+  grid-template-columns: 1fr; /* Uma coluna por padrão em mobile */
+  gap: 2rem;
   margin-top: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .player-data-container {
+    /* Layout de 2 colunas: 1 parte para info, 3 partes para histórico */
+    grid-template-columns: 1fr 3fr; 
+    align-items: flex-start;
+  }
+}
+
+/* --- Estilos Gerais dos Painéis --- */
+.results-container {
   background-color: #1e293b;
   padding: 1.5rem;
   border-radius: 12px;
   border: 1px solid #475569;
 }
-
-.results-container pre {
-  background-color: #0f172a;
-  color: #a7f3d0; /* Cor verde para o código */
-  padding: 1rem;
-  border-radius: 8px;
-  white-space: pre-wrap; /* Quebra de linha no JSON */
-  word-wrap: break-word;
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #475569;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
+.results-header h3 { margin: 0; border: none; padding: 0; }
+.results-container pre { background-color: #0f172a; color: #a7f3d0; padding: 1rem; border-radius: 8px; white-space: pre-wrap; word-wrap: break-word; }
+
+/* --- Lista de Histórico de Partidas Aprimorada --- */
+.match-history ul { list-style: none; padding: 0; margin: 0; max-height: 450px; overflow-y: auto; background-color: #0f172a; border-radius: 8px; padding: 0.5rem; }
+.match-history li { padding: 0.75rem 1rem; background-color: #1e293b; border-radius: 6px; margin-bottom: 0.5rem; cursor: pointer; transition: background-color 0.2s ease; display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif; }
+.match-history li:last-child { margin-bottom: 0; }
+.match-history li:hover { background-color: #334155; }
+.match-history li.win { border-left: 3px solid #3b82f6; }
+.match-history li.loss { border-left: 3px solid #ef4444; }
+.champion-icon-small { width: 32px; height: 32px; border-radius: 50%; }
+.match-list-info { flex-grow: 1; display: flex; flex-direction: column; }
+.game-mode { font-weight: bold; font-size: 0.95rem; color: #f0f0f0; }
+.match-kda { font-size: 0.8rem; color: #94a3b8; }
+.match-result { font-weight: bold; font-size: 0.9rem; }
+.match-history li.win .match-result { color: #3b82f6; }
+.match-history li.loss .match-result { color: #ef4444; }
+
+/* --- Painel de Detalhes da Partida --- */
+.results-container.match-details {
+  margin-top: 2rem;
+}
+
+/* --- Estilos da "Telinha Dev" --- */
+.dev-screen-button { background-color: #1e293b; color: #94a3b8; border: 1px solid #475569; border-radius: 50%; width: 30px; height: 30px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+.dev-screen-button:hover { background-color: #334155; color: #00ffff; border-color: #00ffff; }
+.dev-screen-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 2000; animation: fadeIn 0.3s ease; }
+.dev-screen-content { background-color: #0f172a; border: 1px solid #33ff99; box-shadow: 0 0 30px rgba(51, 255, 153, 0.2); width: 90%; max-width: 800px; height: 80vh; border-radius: 8px; display: flex; flex-direction: column; animation: slideInUp 0.4s ease-out; }
+.dev-screen-header { background-color: #1e293b; padding: 10px 15px; color: #33ff99; font-family: 'Courier New', Courier, monospace; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #33ff99; }
+.dev-screen-header button { background: none; border: none; color: #33ff99; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
+.dev-screen-content pre { padding: 1rem; margin: 0; color: #a7f3d0; font-family: 'Fira Code', 'Courier New', Courier, monospace; font-size: 0.8rem; overflow: auto; flex-grow: 1; }
+
+/* --- Animações --- */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
