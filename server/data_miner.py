@@ -1,3 +1,4 @@
+import sys
 import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -12,85 +13,81 @@ def connect_to_db():
         uri = os.getenv("MONGODB_URI")
         client = MongoClient(uri)
         db = client.get_default_database() 
-        print("✅ Conectado ao MongoDB com sucesso!")
+        print("Conectado ao MongoDB com sucesso!", file=sys.stderr)
         return db["lol_raw_matches"] 
     except Exception as e:
-        print(f"❌ Erro ao conectar ao MongoDB: {e}")
+        print(f"Erro ao conectar ao MongoDB: {e}", file=sys.stderr)
         return None
-
-def extract_features_from_match(match_json):
-    """
-    Recebe o JSON completo de uma partida e extrai as features
-    desejadas de cada um dos 10 participantes.
-    """
-    if not match_json or 'info' not in match_json or 'participants' not in match_json['info']:
-        return []
-
-    player_stats_list = []
-    participants = match_json['info']['participants']
-
-    for p in participants:
-        player_data = {
-            'win': 1 if p.get('win') else 0,
-            'championName': p.get('championName'),
-            'kills': p.get('kills'),
-            'deaths': p.get('deaths'),
-            'assists': p.get('assists'),
-            'goldEarned': p.get('goldEarned'),
-            'totalMinionsKilled': p.get('totalMinionsKilled'),
-            'visionScore': p.get('visionScore'),
-            'wardsPlaced': p.get('wardsPlaced'),
-            'totalDamageDealtToChampions': p.get('totalDamageDealtToChampions'),
-            'turretTakedowns': p.get('turretTakedowns'),
-        }
-        player_stats_list.append(player_data)
-        
-    return player_stats_list
 
 def main():
     """Função principal do script."""
-    matches_collection = connect_to_db()
     
+    # --- MUDANÇA 1: Recebe o PUUID como argumento ---
+    # O script agora espera receber o PUUID do jogador que queremos analisar.
+    if len(sys.argv) < 2:
+        print("Erro: PUUID do jogador nao foi fornecido.", file=sys.stderr)
+        return
+    
+    target_puuid = sys.argv[1]
+    print(f"Iniciando mineracao de dados para o PUUID: {target_puuid}", file=sys.stderr)
+
+    matches_collection = connect_to_db()
     if matches_collection is None:
         return
 
-    print(f"\nBuscando todas as partidas na coleção '{matches_collection.name}'...")
-    
-    # Busca TODAS as partidas salvas no banco de dados
-    all_matches_cursor = matches_collection.find({})
+    # --- MUDANÇA 2: Busca apenas partidas do jogador específico ---
+    print(f"Buscando partidas do jogador na colecao '{matches_collection.name}'...", file=sys.stderr)
+    # A query agora filtra os documentos para encontrar apenas aqueles que contêm o PUUID do nosso jogador.
+    all_matches_cursor = matches_collection.find({ "info.participants.puuid": target_puuid })
     all_matches_list = list(all_matches_cursor)
 
     if not all_matches_list:
-        print("⚠️ Nenhuma partida encontrada no banco de dados para processar.")
+        print(f"Nenhuma partida encontrada para o jogador com PUUID {target_puuid}.", file=sys.stderr)
+        # Cria um CSV vazio para não quebrar o script de ML
+        pd.DataFrame([]).to_csv("lol_player_stats.csv", index=False)
         return
         
-    print(f"Encontradas {len(all_matches_list)} partidas. Processando...")
-
-    # Lista para armazenar os dados de todos os jogadores de todas as partidas
-    all_players_data = []
-
-    for match in all_matches_list:
-        extracted_data = extract_features_from_match(match)
-        all_players_data.extend(extracted_data)
-
-    if not all_players_data:
-        print("Nenhum dado de jogador foi extraído.")
-        return
-        
-    # Converte a lista completa de dados em um DataFrame do Pandas
-    df = pd.DataFrame(all_players_data)
+    print(f"Encontradas {len(all_matches_list)} partidas para o jogador. Processando...", file=sys.stderr)
     
-    # Salva o DataFrame em um arquivo CSV
+    player_specific_data = []
+
+    # --- MUDANÇA 3: Extrai dados apenas do jogador de interesse ---
+    for match in all_matches_list:
+        if 'info' not in match or 'participants' not in match['info']:
+            continue
+            
+        for p in match['info']['participants']:
+            # Apenas extrai os dados se o PUUID bater com o nosso alvo
+            if p.get('puuid') == target_puuid:
+                player_data = {
+                    'win': 1 if p.get('win') else 0,
+                    'championName': p.get('championName'),
+                    'kills': p.get('kills'),
+                    'deaths': p.get('deaths'),
+                    'assists': p.get('assists'),
+                    'goldEarned': p.get('goldEarned'),
+                    'totalMinionsKilled': p.get('totalMinionsKilled'),
+                    'visionScore': p.get('visionScore'),
+                    'wardsPlaced': p.get('wardsPlaced'),
+                    'totalDamageDealtToChampions': p.get('totalDamageDealtToChampions'),
+                    'turretTakedowns': p.get('turretTakedowns'),
+                }
+                player_specific_data.append(player_data)
+                break # Encontrou o jogador, pode pular para a próxima partida
+
+    if not player_specific_data:
+        print("Nenhum dado extraido para este jogador.", file=sys.stderr)
+        return
+        
+    df = pd.DataFrame(player_specific_data)
     output_filename = "lol_player_stats.csv"
     df.to_csv(output_filename, index=False)
     
-    print("\n" + "="*50)
-    print("--- ✨ MINERAÇÃO DE DADOS CONCLUÍDA ✨ ---")
-    print(f"Total de jogadores processados: {len(df)}")
-    print(f"Arquivo de saída gerado: {output_filename}")
-    print("="*50)
-    print("\nAmostra dos dados:")
-    print(df.head().to_string()) # .head() mostra as primeiras 5 linhas
+    print("\n" + "="*50, file=sys.stderr)
+    print(f"--- MINERACAO CONCLUIDA PARA O JOGADOR ---", file=sys.stderr)
+    print(f"Total de partidas processadas: {len(df)}", file=sys.stderr)
+    print(f"Arquivo de saida gerado: {output_filename}", file=sys.stderr)
+    print("="*50, file=sys.stderr)
 
 
 if __name__ == "__main__":

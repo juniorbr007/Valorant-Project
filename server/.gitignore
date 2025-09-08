@@ -3,3 +3,5 @@ node_modules
 
 # Ignorar arquivo de variáveis de ambiente
 .env
+
+lol_player_stats.csv

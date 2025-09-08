@@ -49,6 +49,44 @@ app.get('/', (req, res) => {
     res.send('Servidor rodando com MongoDB!');
 });
 
+// =================================================================
+// --- 5. FUNÇÃO AUXILIAR GLOBAL PARA EXECUTAR SCRIPTS PYTHON ---
+// =================================================================
+
+/**
+ * Executa um script Python de forma assíncrona, capturando saídas.
+ * @param {string} scriptName - O nome do arquivo .py a ser executado.
+ * @param {string[]} [args=[]] - Uma lista de argumentos a serem passados para o script.
+ * @returns {Promise<string>} Uma promessa que resolve com a saída padrão (stdout) do script.
+ */
+const runScript = (scriptName, args = []) => {
+  return new Promise((resolve, reject) => {
+    const pythonProcess = spawn('python', [scriptName, ...args]);
+    let stdout = '';
+    let stderr = '';
+    
+    pythonProcess.stdout.on('data', (data) => { stdout += data.toString(); });
+    pythonProcess.stderr.on('data', (data) => { stderr += data.toString(); });
+    
+    pythonProcess.on('close', (code) => {
+      console.log(`[${scriptName}] finalizado com código: ${code}`);
+      if (stderr) {
+        console.log(`[${scriptName} LOG]:\n${stderr}`);
+      }
+      if (code === 0) {
+        resolve(stdout);
+      } else {
+        reject(new Error(`Script ${scriptName} falhou com código ${code}. Veja o log acima.`));
+      }
+    });
+
+    pythonProcess.on('error', (err) => {
+      console.error(`Falha ao iniciar o script ${scriptName}:`, err);
+      reject(err);
+    });
+  });
+};
+
 app.get('/auth/riot', (req, res) => {
   const clientId = process.env.RIOT_CLIENT_ID || 'ID_AINDA_NAO_CONFIGURADO';
   const redirectUri = process.env.REDIRECT_URI || 'https://valorant-backend.onrender.com/auth/riot/callback';
@@ -189,21 +227,54 @@ app.get('/api/matches', async (req, res) => {
   }
 });
 
-app.get('/api/run-classifier', (req, res) => {
-  console.log("-> Acionando o script de classificação em Python...");
-  const pythonProcess = spawn('python', ['classifier_model.py']);
-  let resultData = '';
-  pythonProcess.stdout.on('data', (data) => resultData += data.toString());
-  pythonProcess.stderr.on('data', (data) => console.error(`[Python Script ERROR]: ${data}`));
-  pythonProcess.on('close', (code) => {
-    if (code === 0) {
-      console.log("-> Script de classificação finalizado com sucesso.");
-      res.status(200).json(JSON.parse(resultData));
-    } else {
-      console.log(`-> Script de classificação finalizado com erro, código: ${code}`);
-      res.status(500).send("Ocorreu um erro durante o processo de classificação.");
-    }
+// --- ROTA PARA EXECUTAR A PIPELINE COMPLETA DE CLASSIFICAÇÃO DO LOL ---
+app.get('/api/lol/run-classifier', (req, res) => {
+  console.log("-> Acionando a pipeline completa de ML do LoL...");
+
+  // Função auxiliar para rodar um script e esperar ele terminar
+// --- AJUSTE NA FUNÇÃO runScript PARA ACEITAR ARGUMENTOS ---
+const runScript = (scriptName, args = []) => {
+  return new Promise((resolve, reject) => {
+    // Adicionamos os argumentos na chamada
+    const pythonProcess = spawn('python', [scriptName, ...args]);
+    let stdout = '';
+    let stderr = '';
+    pythonProcess.stdout.on('data', (data) => { stdout += data.toString(); });
+    pythonProcess.stderr.on('data', (data) => { stderr += data.toString(); });
+    pythonProcess.on('close', (code) => {
+      console.log(`[${scriptName}] finalizado com código: ${code}`);
+      if (stderr) console.error(`[${scriptName} LOG/ERROR]:`, stderr);
+      if (code === 0) resolve(stdout);
+      else reject(new Error(`Script ${scriptName} falhou.`));
+    });
   });
+};
+
+  // 1. Executa o data_miner.py primeiro
+  console.log("--> Passo 1: Executando o data_miner.py para gerar o CSV atualizado...");
+  runScript('data_miner.py')
+    .then(minerOutput => {
+      console.log("--> Passo 1 Concluído. CSV gerado com sucesso.");
+      
+      // 2. Depois que o minerador terminar, executa o classificador
+      console.log("--> Passo 2: Executando o lol_classifier_model.py...");
+      return runScript('lol_classifier_model.py');
+    })
+    .then(classifierOutput => {
+      console.log("--> Passo 2 Concluído. Modelos treinados com sucesso.");
+      try {
+        // Envia o resultado do classificador de volta para o frontend
+        res.status(200).json(JSON.parse(classifierOutput));
+      } catch (e) {
+        console.error("Erro ao parsear o resultado do script classificador:", e);
+        res.status(500).send("Erro ao parsear o resultado do script Python.");
+      }
+    })
+    .catch(error => {
+      // Se qualquer um dos scripts falhar, o erro é capturado aqui
+      console.error("-> ERRO na pipeline de ML:", error.message);
+      res.status(500).send("Ocorreu um erro durante a execução da pipeline de ML.");
+    });
 });
 
 app.post('/api/predict', (req, res) => {
@@ -437,32 +508,29 @@ app.post('/api/lol/save-matches', async (req, res) => {
 
 
 // --- ROTA PARA EXECUTAR O CLASSIFICADOR COM DADOS DO LOL ---
-app.get('/api/lol/run-classifier', (req, res) => {
-  console.log("-> Acionando o script de classificação do LoL em Python...");
-  
-  // Executa o nosso NOVO script
-  const pythonProcess = spawn('python', ['lol_classifier_model.py']);
-  
-  let resultData = '';
-  // Captura a saída (o JSON com os resultados)
-  pythonProcess.stdout.on('data', (data) => resultData += data.toString());
-  // Captura erros, se houver
-  pythonProcess.stderr.on('data', (data) => console.error(`[LoL Classifier ERROR]: ${data}`));
-  
-  pythonProcess.on('close', (code) => {
-    if (code === 0) {
-      console.log("-> Script de classificação do LoL finalizado com sucesso.");
-      try {
-        // Envia o JSON capturado de volta para o frontend
-        res.status(200).json(JSON.parse(resultData));
-      } catch (e) {
-        res.status(500).send("Erro ao parsear o resultado do script Python.");
-      }
-    } else {
-      console.log(`-> Script de classificação do LoL finalizado com erro, código: ${code}`);
-      res.status(500).send("Ocorreu um erro durante o processo de classificação.");
-    }
-  });
+// --- ROTA DO CLASSIFICADOR PARA RECEBER O PUUID ---
+// Rota que executa a pipeline completa de ML para um jogador específico.
+app.get('/api/lol/run-classifier/:puuid', async (req, res) => {
+  const { puuid } = req.params;
+  if (!puuid) {
+    return res.status(400).json({ message: "PUUID é necessário." });
+  }
+
+  console.log(`-> Acionando a pipeline de ML para o PUUID: ${puuid}`);
+  try {
+    console.log("--> Passo 1: Executando data_miner.py para gerar o CSV do jogador...");
+    await runScript('data_miner.py', [puuid]);
+
+    console.log("--> Passo 1 Concluído. CSV específico do jogador gerado.");
+    console.log("--> Passo 2: Executando lol_classifier_model.py...");
+    const classifierOutput = await runScript('lol_classifier_model.py');
+    
+    console.log("--> Passo 2 Concluído. Modelos treinados com sucesso.");
+    res.status(200).json(JSON.parse(classifierOutput));
+  } catch (error) {
+    console.error("-> ERRO na pipeline de ML:", error.message);
+    res.status(500).json({ message: "Ocorreu um erro durante a execução da pipeline de ML." });
+  }
 });
 
 // --- ROTA PARA SERVIR OS DADOS DE TREINAMENTO (CSV) COMO JSON ---
