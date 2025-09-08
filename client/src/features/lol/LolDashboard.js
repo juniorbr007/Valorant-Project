@@ -152,7 +152,7 @@ const LolDashboard = () => {
           </>
         );
       case 'modelLab':
-        return <LolModelLabPage />;
+        return <LolModelLabPage playerData={playerData}/>;
       default:
         return <h2>Selecione uma aba</h2>;
     }

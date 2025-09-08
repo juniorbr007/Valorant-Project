@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import './LolModelLabPage.css';
 
-// --- IMPORTAÇÕES ABSOLUTAS E LIMPAS ---
-// Começando a busca a partir da pasta 'src/'
+// Importações absolutas dos nossos componentes de gráfico compartilhados
 import ModelResultCard from 'shared/ModelResultCard/ModelResultCard';
 import ModelComparisonChart from 'shared/ModelComparisonChart/ModelComparisonChart';
 
-const LolModelLabPage = () => {
+// 1. O componente agora recebe 'playerData' como uma propriedade (prop)
+const LolModelLabPage = ({ playerData }) => {
   const [modelResults, setModelResults] = useState([]);
   const [runInfo, setRunInfo] = useState(null);
   const [isModelRunning, setIsModelRunning] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [isLoadingTable, setIsLoadingTable] = useState(true);
 
+  // useEffect para buscar os dados do CSV (sem alterações)
   useEffect(() => {
     const fetchTrainingData = async () => {
+      setIsLoadingTable(true);
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/lol/training-data`);
         const data = await response.json();
@@ -30,20 +32,31 @@ const LolModelLabPage = () => {
     fetchTrainingData();
   }, []);
 
-  // A função runModels completa
+  // Função para rodar os modelos, agora específica para um jogador
   const runModels = async () => {
+    // 2. Adicionamos uma verificação: se nenhum jogador foi buscado, exibe um aviso.
+    if (!playerData?.puuid) {
+      setRunInfo("Erro: Por favor, busque um jogador na aba 'Análise de Partidas' primeiro.");
+      return;
+    }
+
     setIsModelRunning(true);
     setModelResults([]);
-    setRunInfo("Executando modelos com dados do LoL, isso pode levar um momento...");
+    // Mensagem de status personalizada com o nome do jogador
+    setRunInfo(`Executando modelos para ${playerData.gameName}, isso pode levar um momento...`);
+    
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/lol/run-classifier`);
+      // 3. A CHAMADA DA API AGORA É DINÂMICA
+      // Usamos o PUUID do jogador para chamar a nova rota do backend.
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/lol/run-classifier/${playerData.puuid}`);
       const data = await response.json();
+
       if (!response.ok) {
         throw new Error(data.message || 'Erro no servidor.');
       }
       if (data.results) {
         setModelResults(data.results);
-        setRunInfo(`Validação cruzada (k=${data.cv_folds}) concluída com ${data.dataset_size} amostras de jogadores.`);
+        setRunInfo(`Validação cruzada (k=${data.cv_folds}) concluída com ${data.dataset_size} partidas de ${playerData.gameName}.`);
       } else {
         setRunInfo(data.error || "Ocorreu um erro desconhecido.");
       }
@@ -96,7 +109,7 @@ const LolModelLabPage = () => {
 
       <div className="run-model-container">
         <button onClick={runModels} disabled={isModelRunning} className="run-model-button">
-          {isModelRunning ? 'Processando...' : 'Rodar Modelos com Dados Acima'}
+          {isModelRunning ? 'Processando...' : 'Rodar Modelos para o Jogador Atual'}
         </button>
         {runInfo && <p className="run-info-text">{runInfo}</p>}
       </div>
