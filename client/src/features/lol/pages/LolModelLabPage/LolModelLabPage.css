@@ -229,3 +229,56 @@
     grid-template-columns: 1fr;
   }
 }
+
+.feature-analysis-container {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #475569;
+  text-align: center;
+}
+.feature-analysis-container h3 {
+  font-size: 1.8rem;
+  color: #f0f0f0;
+}
+.feature-analysis-container p {
+  max-width: 700px;
+  margin: 1rem auto 1.5rem auto;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.run-analysis-button {
+  /* Estilos similares ao run-model-button, mas com cor diferente para destacar */
+  background-color: #7c3aed; /* Roxo */
+  color: #ffffff;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.run-analysis-button:hover:not(:disabled) {
+  background-color: #6d28d9;
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+}
+
+.run-analysis-button:disabled {
+  background-color: #475569;
+  cursor: not-allowed;
+}
+
+.chart-image-wrapper {
+  margin-top: 2rem;
+  background-color: #1e293b;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #475569;
+}
+.chart-image-wrapper img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px; /* Adiciona um leve arredondamento à imagem do gráfico */
+}

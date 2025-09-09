@@ -14,6 +14,11 @@ const LolModelLabPage = ({ playerData }) => {
   const [tableData, setTableData] = useState([]);
   const [isLoadingTable, setIsLoadingTable] = useState(true);
   const [gameMode, setGameMode] = useState('ARAM'); // Estado para o seletor de modo de jogo
+  
+  // Estados para a análise de features
+  const [isAnalyzingFeatures, setIsAnalyzingFeatures] = useState(false);
+  const [featureImportanceImg, setFeatureImportanceImg] = useState(null);
+  const [featureError, setFeatureError] = useState('');
 
   // --- EFEITOS (BUSCA DE DADOS INICIAL) ---
   useEffect(() => {
@@ -35,7 +40,9 @@ const LolModelLabPage = ({ playerData }) => {
     fetchTrainingData();
   }, []); // O array vazio [] garante que rode apenas uma vez
 
-  // --- FUNÇÃO PRINCIPAL (EXECUTAR MODELOS) ---
+  // --- FUNÇÕES HANDLER ---
+
+  // Função para rodar os modelos de classificação
   const runModels = async () => {
     if (!playerData?.puuid) {
       setRunInfo("Erro: Por favor, busque um jogador na aba 'Análise de Partidas' primeiro.");
@@ -44,10 +51,11 @@ const LolModelLabPage = ({ playerData }) => {
 
     setIsModelRunning(true);
     setModelResults([]);
+    setFeatureImportanceImg(null); // Limpa o gráfico antigo ao rodar novos modelos
+    setFeatureError('');
     setRunInfo(`Executando modelos para ${playerData.gameName} (Modo: ${gameMode})...`);
     
     try {
-      // Chama a rota dinâmica, passando o PUUID e o MODO DE JOGO
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/lol/run-classifier/${playerData.puuid}/${gameMode}`);
       const data = await response.json();
 
@@ -67,12 +75,37 @@ const LolModelLabPage = ({ playerData }) => {
     }
   };
 
+  // Função para rodar a análise de importância das features
+  const handleFeatureAnalysis = async () => {
+    if (!playerData?.puuid) {
+      setFeatureError("Por favor, busque um jogador primeiro.");
+      return;
+    }
+    setIsAnalyzingFeatures(true);
+    setFeatureImportanceImg(null);
+    setFeatureError('');
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/lol/feature-importance/${playerData.puuid}`);
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || 'Erro no servidor ao gerar o gráfico.');
+      }
+      const imageBlob = await response.blob();
+      const imageUrl = URL.createObjectURL(imageBlob);
+      setFeatureImportanceImg(imageUrl);
+    } catch (err) {
+      setFeatureError(err.message);
+    } finally {
+      setIsAnalyzingFeatures(false);
+    }
+  };
+
   // --- RENDERIZAÇÃO DO COMPONENTE ---
   return (
     <div className="model-lab-container">
       <h2 className="page-title">Laboratório de Modelos Preditivos (LoL)</h2>
       <p className="page-description">
-        Selecione um modo de jogo e execute a pipeline de Machine Learning. O sistema irá filtrar o dataset salvo, treinar os modelos e exibir os resultados da performance preditiva abaixo.
+        Selecione um modo de jogo e execute a pipeline de Machine Learning para avaliar a performance de diferentes modelos na tarefa de prever o resultado de partidas.
       </p>
 
       <div className="data-explanation-card">
@@ -125,8 +158,6 @@ const LolModelLabPage = ({ playerData }) => {
             <h3>Comparativo de Acurácia Geral</h3>
             <ModelComparisonChart results={modelResults} />
           </div>
-
-          {/* Mapeia os resultados para criar uma seção detalhada para cada modelo */}
           {modelResults.map((result, index) => (
             <div key={index} className="model-deep-dive">
               <ModelResultCard results={result} />
@@ -135,6 +166,23 @@ const LolModelLabPage = ({ playerData }) => {
           ))}
         </div>
       )}
+
+      <div className="feature-analysis-container">
+        <h3>Análise de Relevância das Features</h3>
+        <p>
+          Esta análise treina nosso melhor modelo (Random Forest) com todos os dados do jogador e pergunta: "Quais fatores foram mais importantes para prever uma vitória?". O gráfico mostra o peso de cada variável na decisão do modelo.
+        </p>
+        <button onClick={handleFeatureAnalysis} disabled={isAnalyzingFeatures} className="run-analysis-button">
+          {isAnalyzingFeatures ? 'Analisando...' : 'Gerar Gráfico de Importância'}
+        </button>
+        {featureError && <p className="error-message">{featureError}</p>}
+        {isAnalyzingFeatures && <p className="loading-message">Gerando gráfico, isso pode levar um momento...</p>}
+        {featureImportanceImg && (
+          <div className="chart-image-wrapper">
+            <img src={featureImportanceImg} alt="Gráfico de Importância das Features" />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

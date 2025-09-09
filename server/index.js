@@ -509,33 +509,22 @@ app.post('/api/lol/save-matches', async (req, res) => {
 
 // --- ROTA PARA EXECUTAR O CLASSIFICADOR COM DADOS DO LOL ---
 // --- ROTA DO CLASSIFICADOR PARA RECEBER O PUUID ---
-// Rota que executa a pipeline de ML para um jogador e MODO DE JOGO específico.
+// Rota que executa a pipeline de ML completa com um único script.
 app.get('/api/lol/run-classifier/:puuid/:gameMode', async (req, res) => {
-  // 1. AGORA CAPTURAMOS O 'gameMode' DOS PARÂMETROS DA ROTA
   const { puuid, gameMode } = req.params;
-  
   if (!puuid || !gameMode) {
     return res.status(400).json({ message: "PUUID e Modo de Jogo são necessários." });
   }
 
-  console.log(`-> Acionando a pipeline de ML para o PUUID: ${puuid}, Modo: ${gameMode}`);
-  
+  console.log(`-> Acionando pipeline de ML mestre para PUUID: ${puuid}, Modo: ${gameMode}`);
   try {
-    // Passo 1: O minerador de dados gera o CSV completo do jogador (sem alterações)
-    console.log("--> Passo 1: Executando data_miner.py para gerar o CSV do jogador...");
-    await runScript('data_miner.py', [puuid]);
-
-    console.log("--> Passo 1 Concluído. CSV específico do jogador gerado.");
+    // Agora passamos ambos os argumentos para o nosso novo script mestre
+    const scriptOutput = await runScript('master_pipeline.py', [puuid, gameMode]);
     
-    // Passo 2: Executa o classificador, agora passando o 'gameMode' como argumento
-    console.log(`--> Passo 2: Executando lol_classifier_model.py para o modo ${gameMode}...`);
-    const classifierOutput = await runScript('lol_classifier_model.py', [gameMode]);
-    
-    console.log("--> Passo 2 Concluído. Modelos treinados com sucesso.");
-    res.status(200).json(JSON.parse(classifierOutput));
-    
+    console.log("--> Pipeline mestre concluída com sucesso.");
+    res.status(200).json(JSON.parse(scriptOutput));
   } catch (error) {
-    console.error("-> ERRO na pipeline de ML:", error.message);
+    console.error("-> ERRO na pipeline de ML mestre:", error.message);
     res.status(500).json({ message: "Ocorreu um erro durante a execução da pipeline de ML." });
   }
 });
@@ -569,6 +558,47 @@ app.get('/api/lol/training-data', (req, res) => {
   } catch (error) {
     console.error("ERRO ao ler o arquivo CSV:", error);
     res.status(500).json({ message: "Erro interno ao processar os dados de treinamento." });
+  }
+});
+
+// --- ROTA PARA ANÁLISE DE IMPORTÂNCIA DAS FEATURES ---
+app.get('/api/lol/feature-importance/:puuid', async (req, res) => {
+  const { puuid } = req.params;
+  if (!puuid) return res.status(400).json({ message: "PUUID é necessário." });
+
+  console.log(`-> Acionando análise de features para o PUUID: ${puuid}`);
+  try {
+    // Passo 1: Gera o CSV específico e atualizado do jogador
+    await runScript('data_miner.py', [puuid]);
+    
+    // Passo 2: Roda o novo script de análise que gera a imagem
+    const analysisResultJson = await runScript('feature_analysis.py');
+    const analysisResult = JSON.parse(analysisResultJson);
+
+    // Se o script de análise retornou um erro (ex: dataset pequeno), repassa para o frontend
+    if (analysisResult.error) {
+      return res.status(400).json({ message: analysisResult.error });
+    }
+
+    const imagePath = path.join(__dirname, analysisResult.image_path);
+    
+    // Passo 3: Envia a imagem gerada de volta para o frontend
+    res.sendFile(imagePath, (err) => {
+      if (err) {
+        console.error("Erro ao enviar a imagem:", err);
+        res.status(500).send("Não foi possível enviar a imagem de análise.");
+      }
+      // Opcional: deleta a imagem do servidor depois de enviada para limpar o disco
+      try {
+        fs.unlinkSync(imagePath);
+      } catch (unlinkErr) {
+        console.error("Erro ao deletar a imagem temporária:", unlinkErr);
+      }
+    });
+
+  } catch (error) {
+    console.error("-> ERRO na pipeline de análise de features:", error.message);
+    res.status(500).json({ message: "Ocorreu um erro durante a análise." });
   }
 });
 
