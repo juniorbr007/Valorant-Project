@@ -11,10 +11,7 @@
 ---
 
 ## 🎞️ Demonstração (GIF)
-
-[Aqui você pode inserir um GIF da sua aplicação em funcionamento]
-
-*(**Dica:** Use um programa como o `ScreenToGif` para gravar sua tela mostrando o fluxo completo: busca de um jogador do LoL -> salvar as 20 partidas -> ir para o laboratório -> rodar os modelos -> gerar o gráfico de features. Depois, arraste o arquivo .gif para esta seção no GitHub.)*
+![ezgif-322dd8cf564f0b](https://github.com/user-attachments/assets/c313c110-4569-47bc-8af9-9e409d3cb75e)
 
 ---
 
@@ -136,7 +133,7 @@ O projeto utiliza uma **arquitetura baseada em features**, separando a lógica d
     ├── lol_classifier_model.py # Script para treinamento e validação dos modelos
     └── feature_analysis.py   # Script para análise da importância das features
 
-
-```bash
+```
        📄 Licença
+
 Este projeto está sob a licença MIT.
