@@ -134,6 +134,7 @@ O projeto utiliza uma **arquitetura baseada em features**, separando a lógica d
     └── feature_analysis.py   # Script para análise da importância das features
 
 ```
-       📄 Licença
+📄 Licença
 
 Este projeto está sob a licença MIT.
+
