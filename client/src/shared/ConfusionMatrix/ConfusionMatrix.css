@@ -1,0 +1,67 @@
+.confusion-matrix-container {
+  text-align: center;
+  background-color: #1e293b;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #475569;
+}
+
+.confusion-matrix-container h4 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  color: #f0f0f0;
+}
+
+.confusion-matrix-container table {
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 6px;
+  font-size: 0.9rem;
+}
+
+.confusion-matrix-container th,
+.confusion-matrix-container td {
+  width: 110px;
+  height: 70px;
+  padding: 10px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.vertical-header {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+}
+
+.header-pred, .header-val {
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+}
+
+.header-cell {
+  font-weight: bold;
+}
+
+.cell {
+  border-radius: 8px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.correct-cell {
+  background-color: rgba(22, 163, 74, 0.3);
+  border: 1px solid #16a34a;
+  color: #a7f3d0;
+}
+
+.error-cell {
+  background-color: rgba(239, 68, 68, 0.3);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+}
