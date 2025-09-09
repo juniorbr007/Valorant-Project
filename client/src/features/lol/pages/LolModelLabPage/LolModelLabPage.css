@@ -208,3 +208,24 @@
   outline: none;
   border-color: #00ffff;
 }
+
+.model-deep-dive {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #475569;
+}
+
+.model-deep-dive:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .model-deep-dive {
+    grid-template-columns: 1fr;
+  }
+}

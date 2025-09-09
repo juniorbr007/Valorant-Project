@@ -1,49 +1,55 @@
 import React from 'react';
 import './ModelResultCard.css';
 
+// Pequeno sub-componente para evitar repetição de código na tabela
+const ReportRow = ({ label, data }) => {
+  // Verificação para o caso de os dados ainda não terem chegado
+  if (!data) return null;
+
+  return (
+    <tr>
+      <td className="label-cell">{label}</td>
+      <td>{(data.precision * 100).toFixed(1)}%</td>
+      <td>{(data.recall * 100).toFixed(1)}%</td>
+      <td>{(data['f1-score']).toFixed(2)}</td>
+      <td>{data.support}</td>
+    </tr>
+  );
+};
+
+
 const ModelResultCard = ({ results }) => {
-  // Verificação de segurança para garantir que os dados existem
   if (!results) {
     return <div className="model-result-card skeleton">Carregando...</div>;
   }
-
-  // Função para formatar os números como porcentagem
-  const formatAsPercent = (value) => {
-    // Se o valor não for um número (ex: undefined), retorna 'N/A'
-    if (typeof value !== 'number') return 'N/A';
-    // Multiplica por 100 e fixa em 2 casas decimais
-    return `${(value * 100).toFixed(2)}%`;
-  };
+  
+  // Pegamos o relatório detalhado que veio do nosso script Python
+  const report = results.classification_report;
 
   return (
-    <div className="model-result-card">
-      {/* --- AJUSTE AQUI --- */}
-      {/* Usamos 'results.model_name' para pegar o nome do modelo */}
+    <div className="model-result-card detailed">
       <h3 className="model-name">{results.model_name}</h3>
+      <div className="accuracy-box">
+        Acurácia Geral: <span>{(results.accuracy * 100).toFixed(2)}%</span>
+      </div>
       
-      <ul className="metrics-list">
-        <li>
-          <span className="metric-label">Acurácia</span>
-          {/* --- AJUSTE AQUI --- */}
-          {/* Usamos 'results.accuracy' para o valor e formatamos */}
-          <span className="metric-value">{formatAsPercent(results.accuracy)}</span>
-        </li>
-        <li>
-          <span className="metric-label">Precisão</span>
-          {/* --- AJUSTE AQUI --- */}
-          <span className="metric-value">{formatAsPercent(results.precision)}</span>
-        </li>
-        <li>
-          <span className="metric-label">Recall</span>
-          {/* --- AJUSTE AQUI --- */}
-          <span className="metric-value">{formatAsPercent(results.recall)}</span>
-        </li>
-        <li>
-          <span className="metric-label">F1-Score</span>
-          {/* --- AJUSTE AQUI --- */}
-          <span className="metric-value">{formatAsPercent(results.f1_score)}</span>
-        </li>
-      </ul>
+      {report && (
+        <table className="report-table">
+          <thead>
+            <tr>
+              <th>Classe</th>
+              <th>Precisão</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>Amostras</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ReportRow label="Derrota" data={report.loss} />
+            <ReportRow label="Vitória" data={report.win} />
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };
