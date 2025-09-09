@@ -509,24 +509,31 @@ app.post('/api/lol/save-matches', async (req, res) => {
 
 // --- ROTA PARA EXECUTAR O CLASSIFICADOR COM DADOS DO LOL ---
 // --- ROTA DO CLASSIFICADOR PARA RECEBER O PUUID ---
-// Rota que executa a pipeline completa de ML para um jogador específico.
-app.get('/api/lol/run-classifier/:puuid', async (req, res) => {
-  const { puuid } = req.params;
-  if (!puuid) {
-    return res.status(400).json({ message: "PUUID é necessário." });
+// Rota que executa a pipeline de ML para um jogador e MODO DE JOGO específico.
+app.get('/api/lol/run-classifier/:puuid/:gameMode', async (req, res) => {
+  // 1. AGORA CAPTURAMOS O 'gameMode' DOS PARÂMETROS DA ROTA
+  const { puuid, gameMode } = req.params;
+  
+  if (!puuid || !gameMode) {
+    return res.status(400).json({ message: "PUUID e Modo de Jogo são necessários." });
   }
 
-  console.log(`-> Acionando a pipeline de ML para o PUUID: ${puuid}`);
+  console.log(`-> Acionando a pipeline de ML para o PUUID: ${puuid}, Modo: ${gameMode}`);
+  
   try {
+    // Passo 1: O minerador de dados gera o CSV completo do jogador (sem alterações)
     console.log("--> Passo 1: Executando data_miner.py para gerar o CSV do jogador...");
     await runScript('data_miner.py', [puuid]);
 
     console.log("--> Passo 1 Concluído. CSV específico do jogador gerado.");
-    console.log("--> Passo 2: Executando lol_classifier_model.py...");
-    const classifierOutput = await runScript('lol_classifier_model.py');
+    
+    // Passo 2: Executa o classificador, agora passando o 'gameMode' como argumento
+    console.log(`--> Passo 2: Executando lol_classifier_model.py para o modo ${gameMode}...`);
+    const classifierOutput = await runScript('lol_classifier_model.py', [gameMode]);
     
     console.log("--> Passo 2 Concluído. Modelos treinados com sucesso.");
     res.status(200).json(JSON.parse(classifierOutput));
+    
   } catch (error) {
     console.error("-> ERRO na pipeline de ML:", error.message);
     res.status(500).json({ message: "Ocorreu um erro durante a execução da pipeline de ML." });

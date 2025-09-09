@@ -55,11 +55,15 @@ def main():
     for match in all_matches_list:
         if 'info' not in match or 'participants' not in match['info']:
             continue
+
+        # Pegamos o modo de jogo da partida
+        game_mode = match['info'].get('gameMode')
             
         for p in match['info']['participants']:
             # Apenas extrai os dados se o PUUID bater com o nosso alvo
             if p.get('puuid') == target_puuid:
                 player_data = {
+                    'gameMode': game_mode,
                     'win': 1 if p.get('win') else 0,
                     'championName': p.get('championName'),
                     'kills': p.get('kills'),
