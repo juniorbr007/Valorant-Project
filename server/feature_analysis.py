@@ -1,63 +1,98 @@
+# server/feature_analysis.py
+
+import sys
+import os
+import json
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
-import json
-import sys
+from sklearn.ensemble import RandomForestClassifier
 
-plt.switch_backend('Agg')
+plt.switch_backend("Agg")  # garante compatibilidade em ambientes sem interface gráfica
 
-def analyze_features(csv_path='lol_player_stats.csv'):
+
+def analyze_features(csv_path='lol_player_stats.csv', output_dir='feature_analysis'):
     """
-    Carrega o dataset de um jogador, treina um modelo Random Forest
-    e gera um gráfico com a importância de cada feature.
+    Realiza análise de importância das features usando Random Forest.
     """
+
     try:
         df = pd.read_csv(csv_path)
-        if df.shape[0] < 10:
-            return {"error": "Dataset muito pequeno para uma análise significativa (mínimo de 10 partidas)."}
-    except FileNotFoundError:
-        return {"error": f"Arquivo '{csv_path}' não encontrado. Gere o dataset primeiro."}
+    except Exception as e:
+        msg = f"❌ Erro ao carregar CSV: {e}"
+        print(msg, file=sys.stderr)
+        return {"error": msg}
 
-    # --- AJUSTE CRÍTICO AQUI ---
-    # Adicionamos 'gameMode' à lista de colunas para serem transformadas em dummies.
-    # Agora, tanto os nomes dos campeões quanto os modos de jogo viram números.
-    df_encoded = pd.get_dummies(df, columns=['championName', 'gameMode'], drop_first=True)
+    if df.shape[0] < 10:
+        msg = "⚠️ Dataset muito pequeno (mínimo 10 partidas)."
+        print(msg, file=sys.stderr)
+        return {"error": msg}
 
-    # Separação em Features (X) e Alvo (y)
-    X = df_encoded.drop('win', axis=1)
+    os.makedirs(output_dir, exist_ok=True)
+
+    if "win" not in df.columns:
+        msg = "❌ Dataset sem coluna 'win'."
+        print(msg, file=sys.stderr)
+        return {"error": msg}
+
+    # One-hot para categóricas
+    categorical_cols = [c for c in ['championName', 'gameMode'] if c in df.columns]
+    df_encoded = pd.get_dummies(df, columns=categorical_cols, drop_first=True)
+
+    X = df_encoded.drop(columns=['win'], errors='ignore')
     y = df_encoded['win']
-    
-    # Treina o modelo Random Forest com todos os dados do jogador
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X, y)
 
-    # Extrai a importância das features
+    X = X.select_dtypes(include=['int64', 'float64'])
+
+    # Random Forest
+    try:
+        model = RandomForestClassifier(n_estimators=200, random_state=42, n_jobs=-1)
+        model.fit(X, y)
+    except Exception as e:
+        msg = f"❌ Erro ao treinar modelo: {e}"
+        print(msg, file=sys.stderr)
+        return {"error": msg}
+
+    # Importâncias
     importances = model.feature_importances_
-    feature_names = X.columns
-    
-    # Cria um DataFrame para facilitar a visualização e ordenação
-    feature_importance_df = pd.DataFrame({
-        'feature': feature_names,
-        'importance': importances
-    }).sort_values(by='importance', ascending=False)
+    feature_importance_df = (
+        pd.DataFrame({"feature": X.columns, "importance": importances})
+        .sort_values(by="importance", ascending=False)
+    )
 
-    # Criação do Gráfico
-    plt.figure(figsize=(12, 8))
-    sns.barplot(x='importance', y='feature', data=feature_importance_df.head(15), palette='viridis_r', hue='feature', legend=False)
-    plt.title('Top 15 Features Mais Importantes para Prever a Vitória', fontsize=16)
-    plt.xlabel('Importância Relativa (Gini Importance)', fontsize=12)
-    plt.ylabel('Feature', fontsize=12)
+    # ---------- GRÁFICO CORRIGIDO ----------
+    plt.figure(figsize=(10, 7))
+
+    sns.barplot(
+        data=feature_importance_df.head(15),
+        x="importance",
+        y="feature",
+        palette="viridis_r"
+    )
+
+    plt.title("Top 15 Features Mais Relevantes para Vitória", fontsize=14, pad=12)
+    plt.xlabel("Importância Relativa (Gini Importance)", fontsize=12)
+    plt.ylabel("Feature", fontsize=12)
+    plt.grid(axis="x", linestyle="--", alpha=0.4)
     plt.tight_layout()
-    
-    output_image_path = "feature_importance.png"
-    plt.savefig(output_image_path)
-    
-    # Retorna o caminho da imagem que foi gerada
-    return {"image_path": output_image_path}
+
+    # Arquivos de saída
+    image_path = os.path.join(output_dir, "feature_importance.png")
+    csv_path_out = os.path.join(output_dir, "feature_importance.csv")
+
+    # SALVA DE VERDADE
+    plt.savefig(image_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    # Salva CSV
+    feature_importance_df.to_csv(csv_path_out, index=False)
+
+    print(f"✅ Análise concluída e salva em:\n- {image_path}\n- {csv_path_out}", file=sys.stderr)
+
+    return {"image_path": image_path, "csv_path": csv_path_out}
 
 
 if __name__ == "__main__":
-    csv_file = sys.argv[1] if len(sys.argv) > 1 else 'lol_player_stats.csv'
-    result = analyze_features(csv_file)
-    print(json.dumps(result))
+    file = sys.argv[1] if len(sys.argv) > 1 else "lol_player_stats.csv"
+    result = analyze_features(file)
+    print(json.dumps(result, indent=4))

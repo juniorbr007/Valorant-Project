@@ -1,7 +1,19 @@
-# Ignorar dependências do Node
-node_modules
+# Dependencies
+/node_modules/
 
-# Ignorar arquivo de variáveis de ambiente
+# Environment
 .env
 
+# CSV e outros arquivos grandes
 lol_player_stats.csv
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+env/
+venv/
+.venv/
