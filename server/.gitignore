@@ -1,19 +1,37 @@
-# Dependencies
-/node_modules/
+# --------------------------
+# Node Dependencies
+# --------------------------
+node_modules/
 
+# --------------------------
 # Environment
+# --------------------------
 .env
+*.env
 
-# CSV e outros arquivos grandes
-lol_player_stats.csv
+# --------------------------
+# CSV / Large Data Files
+# --------------------------
+*.csv
+*.tsv
+*.xlsx
 
-# Cache Python
+# --------------------------
+# Python Cache
+# --------------------------
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Virtual env
+# --------------------------
+# Virtual Envs
+# --------------------------
 env/
 venv/
 .venv/
+
+# --------------------------
+# Logs
+# --------------------------
+*.log
