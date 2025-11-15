@@ -1,0 +1,264 @@
+{
+  "results": [
+    {
+      "model_name": "Cypher's Edge - Random Forest",
+      "accuracy": 0.7708333333333334,
+      "cv_scores": [
+        0.6,
+        0.6,
+        0.8,
+        0.8,
+        1.0,
+        0.8,
+        0.6,
+        1.0,
+        1.0,
+        0.5
+      ],
+      "precision": 0.7703296703296704,
+      "recall": 0.7277777777777779,
+      "f1_score": 0.7379652605459057,
+      "confusion_matrix": [
+        [
+          10,
+          8
+        ],
+        [
+          3,
+          27
+        ]
+      ],
+      "classification_report": {
+        "loss": {
+          "precision": 0.7692307692307693,
+          "recall": 0.5555555555555556,
+          "f1-score": 0.6451612903225806,
+          "support": 18.0
+        },
+        "win": {
+          "precision": 0.7714285714285715,
+          "recall": 0.9,
+          "f1-score": 0.8307692307692308,
+          "support": 30.0
+        }
+      }
+    },
+    {
+      "model_name": "Cypher's Edge - MLP Classifier",
+      "accuracy": 0.6875,
+      "cv_scores": [
+        0.6,
+        0.8,
+        0.8,
+        0.6,
+        1.0,
+        0.6,
+        0.6,
+        0.6,
+        1.0,
+        0.25
+      ],
+      "precision": 0.6650853889943074,
+      "recall": 0.6611111111111112,
+      "f1_score": 0.6627634660421545,
+      "confusion_matrix": [
+        [
+          10,
+          8
+        ],
+        [
+          7,
+          23
+        ]
+      ],
+      "classification_report": {
+        "loss": {
+          "precision": 0.5882352941176471,
+          "recall": 0.5555555555555556,
+          "f1-score": 0.5714285714285714,
+          "support": 18.0
+        },
+        "win": {
+          "precision": 0.7419354838709677,
+          "recall": 0.7666666666666667,
+          "f1-score": 0.7540983606557377,
+          "support": 30.0
+        }
+      }
+    },
+    {
+      "model_name": "Cypher's Edge - Naive Bayes",
+      "accuracy": 0.5833333333333334,
+      "cv_scores": [
+        0.2,
+        0.8,
+        0.8,
+        0.6,
+        0.8,
+        0.8,
+        0.4,
+        0.2,
+        0.75,
+        0.5
+      ],
+      "precision": 0.5555555555555556,
+      "recall": 0.5555555555555556,
+      "f1_score": 0.5555555555555556,
+      "confusion_matrix": [
+        [
+          8,
+          10
+        ],
+        [
+          10,
+          20
+        ]
+      ],
+      "classification_report": {
+        "loss": {
+          "precision": 0.4444444444444444,
+          "recall": 0.4444444444444444,
+          "f1-score": 0.4444444444444444,
+          "support": 18.0
+        },
+        "win": {
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1-score": 0.6666666666666666,
+          "support": 30.0
+        }
+      }
+    },
+    {
+      "model_name": "Literatura 1 - Random Forest",
+      "accuracy": 0.712,
+      "cv_scores": [
+        0.7,
+        0.64,
+        0.76,
+        0.8,
+        0.7,
+        0.62,
+        0.66,
+        0.72,
+        0.76,
+        0.76
+      ],
+      "precision": 0.7045586527293844,
+      "recall": 0.6866719660837308,
+      "f1_score": 0.6904237754540452,
+      "confusion_matrix": [
+        [
+          112,
+          92
+        ],
+        [
+          52,
+          244
+        ]
+      ],
+      "classification_report": {
+        "loss": {
+          "precision": 0.6829268292682927,
+          "recall": 0.5490196078431373,
+          "f1-score": 0.6086956521739131,
+          "support": 204.0
+        },
+        "win": {
+          "precision": 0.7261904761904762,
+          "recall": 0.8243243243243243,
+          "f1-score": 0.7721518987341772,
+          "support": 296.0
+        }
+      }
+    },
+    {
+      "model_name": "Literatura 1 - MLP Classifier",
+      "accuracy": 0.66,
+      "cv_scores": [
+        0.66,
+        0.62,
+        0.7,
+        0.74,
+        0.64,
+        0.56,
+        0.58,
+        0.62,
+        0.7,
+        0.78
+      ],
+      "precision": 0.6477839059073692,
+      "recall": 0.647323794382618,
+      "f1_score": 0.6475427509910268,
+      "confusion_matrix": [
+        [
+          118,
+          86
+        ],
+        [
+          84,
+          212
+        ]
+      ],
+      "classification_report": {
+        "loss": {
+          "precision": 0.5841584158415841,
+          "recall": 0.5784313725490197,
+          "f1-score": 0.5812807881773399,
+          "support": 204.0
+        },
+        "win": {
+          "precision": 0.7114093959731543,
+          "recall": 0.7162162162162162,
+          "f1-score": 0.7138047138047138,
+          "support": 296.0
+        }
+      }
+    },
+    {
+      "model_name": "Literatura 1 - Naive Bayes",
+      "accuracy": 0.616,
+      "cv_scores": [
+        0.56,
+        0.54,
+        0.64,
+        0.72,
+        0.64,
+        0.7,
+        0.44,
+        0.6,
+        0.64,
+        0.68
+      ],
+      "precision": 0.6250644994840042,
+      "recall": 0.6284446210916799,
+      "f1_score": 0.6151132208608634,
+      "confusion_matrix": [
+        [
+          142,
+          62
+        ],
+        [
+          130,
+          166
+        ]
+      ],
+      "classification_report": {
+        "loss": {
+          "precision": 0.5220588235294118,
+          "recall": 0.696078431372549,
+          "f1-score": 0.5966386554621849,
+          "support": 204.0
+        },
+        "win": {
+          "precision": 0.7280701754385965,
+          "recall": 0.5608108108108109,
+          "f1-score": 0.6335877862595419,
+          "support": 296.0
+        }
+      }
+    }
+  ],
+  "dataset_size": 48,
+  "cv_folds": 10
+}
